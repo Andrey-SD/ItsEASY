@@ -21,8 +21,8 @@ const timeLimit = 10;   //Максимальний час для проходж�
 //  Добавить исключения на переменые, есть они или нет
 // ******************************************************
 
-function speedWriteTest(timeLimit) {
-    this.intervalID = undefined;
+function speedWriteTest() {
+    let intervalID = undefined;
     this.timer = 0;
     this.isRunning = false;
 
@@ -37,20 +37,22 @@ function speedWriteTest(timeLimit) {
 
     this.timerStop = () => {
         this.isRunning = false;
+        clearInterval(intervalID);
     }
 
     this.timerStart = () => {
+        this.timer = 0;
         this.isRunning = true;
-        this.intervalID = setInterval(() => {
+        intervalID = setInterval(() => {
             this.timerCount();
         }, 1000);
     }
 
-    this.testReset = function () {
-        this.intervalID = undefined;
-        this.timer = 0;
-        this.isRunning = false;
-    }
+    // this.reset = function () {
+    //     intervalID = undefined;
+    //     this.timer = 0;
+    //     this.isRunning = false;
+    // }
 }
 
 const writeTest = new speedWriteTest(timeLimit);
@@ -61,13 +63,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const blockStep1 = document.getElementsByClassName('uc-blockStep-1')[0];
     const blockStep2 = document.getElementsByClassName('uc-blockStep-2')[0];
 
-    const button = document.querySelector('[href="start-test"]');
-    button.textContent = buttonTextStep1;
+    const button = document.querySelector('[href="#start-test"]');
+    console.log(button);
 
-    const stopWatchDisplay = document.getElementsByClassName('uc-stopwatch')[0];
-    stopWatchDisplay.textContent = '00:00';
+    const stopWatch = document.getElementsByClassName('uc-stopwatch')[0];
+    stopWatch.style.display = 'none';   
 
-    blockStep2.style.display = 'none';
+    const stopWatchDisplay = stopWatch.querySelector('b');
+   
 
     button.addEventListener('click', (e) => {
         e.preventDefault();
@@ -81,9 +84,17 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    (function init() {
+    console.log('work');
+        stopWatchDisplay.textContent = '00:00';
+        blockStep2.style.display = 'none';
+        // writeTest.reset();
+    }());    
+
     const startTest = () => {
         writeTest.timerStart();
         blockStep2.style.display = 'block';
+        stopWatch.style.display = 'block';
         button.textContent = buttonTextStep2;
         drawTimer();
     }
@@ -93,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
         button.textContent = buttonTextStep3;
     };
 
-    const drawTimer = function (str) {
+    const drawTimer = function () {
         setInterval(() => {
             if (writeTest.isRunning) {
                 const date = new Date(0);
