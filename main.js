@@ -28,7 +28,7 @@ const step3_BlockClassName = 'uc-blockStep-3';	//Ім'я класу для бл�
 //  Добавить исключения на переменые, есть они или нет
 // ******************************************************
 
-function speedWriteTest() {
+function StopwatchTest() {
 	let intervalID = undefined;
 	this.timer = 0;
 	this.isRunning = false;
@@ -62,11 +62,13 @@ function speedWriteTest() {
 	// }
 }
 
-const writeTest = new speedWriteTest(timeLimit);
+const stopwatchTest = new StopwatchTest(timeLimit);
 const progresStep = 1;
 
 
 document.addEventListener("DOMContentLoaded", () => {
+
+	// let currenetTest = ;
 
 	const blockStep1 = document.getElementsByClassName(step1_blockClassName)[0];
 	const blockStep2 = document.getElementsByClassName(step2_BlockClassName)[0];
@@ -78,14 +80,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	button.addEventListener('click', (e) => {
 		e.preventDefault();
-		if (!writeTest.isRunning) {
+		if (!stopwatchTest.isRunning) {
 			startTest();
 		} else {
 			stopTest();
 		}
 	});
 
-	const progresSetStep = (stepNumber) => {
+	const progresSetState = (stepNumber) => {
 		switch (stepNumber) {
 			case 1:
 				blockStep1.style.display = 'block';
@@ -93,6 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				blockStep3.style.display = 'none';
 				stopWatch.style.display = 'none';
 				button.textContent = buttonTextStep1;
+				console.log(stepNumber);
 				break;
 
 			case 2:
@@ -101,13 +104,16 @@ document.addEventListener("DOMContentLoaded", () => {
 				blockStep3.style.display = 'none';
 				stopWatch.style.display = 'block';
 				button.textContent = buttonTextStep2;
+				console.log(stepNumber);
 				break;
+
 			case 3:
 				blockStep1.style.display = 'none';
 				blockStep2.style.display = 'none';
 				stopWatch.style.display = 'none';
 				blockStep3.style.display = 'block';
 				button.style.display = 'none';
+				console.log(stepNumber);
 				break;
 			default:
 				break;
@@ -115,33 +121,50 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 
 	const startTest = () => {
-		writeTest.timerStart();
-		progresSetStep(2);
-		drawTimer();
+		//обернуть в коллбек
+		const allTest = getAllText();
+		console.log(getRandomTest(allTest));
+		stopwatchTest.timerStart();
+		progresSetState(2);
+		printTimer();
 	}
 
 	const stopTest = () => {
-		writeTest.timerStop();
-		progresSetStep(3);
+		stopwatchTest.timerStop();
+		progresSetState(3);
+		printQuetion(0);
 	};
 
-	const drawTimer = () => {
+	const printTimer = () => {
 		setInterval(() => {
-			if (writeTest.isRunning) {
+			if (stopwatchTest.isRunning) {
 				const date = new Date(0);
-				date.setSeconds(writeTest.timer);
+				date.setSeconds(stopwatchTest.timer);
 				const timeString = date.toISOString().substring(14, 19);
 				stopWatchDisplay.textContent = timeString;
-				if (writeTest.timer >= timeLimit) {
+				if (stopwatchTest.timer >= timeLimit) {
 					stopTest();
 				}
 			}
 		}, 1000);
 	}
 
+	const getRandomTest = (testArray, filter = '') => {
+		console.log(testArray);
+		if (filter != '') {
+			testArray = testArray.filter(test => test.category == filter);
+		}
+		const rand = Math.floor(Math.random() * testArray.length);
+		return testArray[rand];
+	}
+
+	const printQuetion = (questionNumber) => {
+		console.log('questionNumber');
+	}
+
 	(function init() {
 		stopWatchDisplay.textContent = '00:00';
 		blockStep3.querySelector('a.js-sendvote-btn').parentElement.style.display = 'none';
-		progresSetStep(1);
+		progresSetState(1);
 	}());
 });
