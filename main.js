@@ -145,8 +145,8 @@ document.addEventListener('DOMContentLoaded', () => {
 				blockStep2.style.display = 'block';
 				blockStep3.style.display = 'none';
 				stopWatch.style.display = 'block';
-				button.textContent = buttonTextStep2;
 				console.log('stepNumber= ' + stepNumber);
+				button.textContent = buttonTextStep2;
 				break;
 
 			case 3:
@@ -157,13 +157,22 @@ document.addEventListener('DOMContentLoaded', () => {
 				button.style.display = 'none';
 				console.log('stepNumber= ' + stepNumber);
 				break;
+
+			case 4:
+				blockStep1.style.display = 'none';
+				blockStep2.style.display = 'none';
+				stopWatch.style.display = 'none';
+				blockStep3.style.display = 'none';
+				button.textContent = buttonTextStep4;
+				button.style.display = 'block';
+				console.log('stepNumber= ' + stepNumber);
+				break;
 			default:
 				break;
 		}
 	}
 
 	const startRead = () => {
-		//обернуть в коллбек
 		const allTest = getAllText();
 		currentTest = new CurrentTest(getRandomTest(allTest, ''));
 		printTextValue(currentTest.textValue);
@@ -176,6 +185,25 @@ document.addEventListener('DOMContentLoaded', () => {
 		stopwatchTest.timerStop();
 		progresSetState(3);
 		printQuestion(currentTest.getCurrentQuestion());
+	};
+
+	const showTestResult = (callBack) => {
+		progresSetState(4);
+		const statisticObj = callBack();
+		console.log(statisticObj.wordCount);
+		console.log('printHTML');
+	}
+
+	const prepareStatistic = () => {
+		const obj = {
+			time: 0,
+			wordCount: 0
+		}
+		const str = currentTest.textValue;
+		obj.wordCount = str.split(' ').length + 1;
+		console.log(obj.wordCount);
+
+		return obj;
 	};
 
 	const printTimer = () => {
@@ -210,7 +238,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	const printQuestion = (question) => {
 		blockStep3.querySelector('.t-name').textContent = question.question;
-		// for (let i = 0; i < question.answers.length; i++) {
 		blockStep3Answers.innerHTML = '';
 		question.answers.forEach((answer, index) => {
 			const voitItemHTML = `
@@ -239,7 +266,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			blockStep3Answers.insertAdjacentHTML('beforeend', voitItemHTML);
 		});
-		// }
 	}
 
 	(function init() {
@@ -262,10 +288,9 @@ document.addEventListener('DOMContentLoaded', () => {
 		if (currentTest.isDuring) {
 			setTimeout(() => {
 				printQuestion(currentTest.getCurrentQuestion());
-
 			}, 500);
 		} else {
-			console.log('next etap');
+			showTestResult(prepareStatistic);
 		}
 	}
 
