@@ -8,10 +8,10 @@
 
 
 const buttonTextStep1 = '	Почати тест	';  //Текст для кнонки початку тесту
-const buttonTextStep2 = '	Прочитав	';  	//Текст для кнопки коли користувач завершив читання
-const buttonTextStep3 = '	Повторити	';  	//Текст для кнопки коли користувач хоче повторити тест
-const buttonTextStep4 = '	Повторити	';  	//Текст для кнопки коли користувач хоче повторити тест
-const timeLimit = 10;   									//Максимальний час для проходження тесту(сек);
+const buttonTextStep2 = '	Прочитав	';  //Текст для кнопки коли користувач завершив читання
+const buttonTextStep3 = '	Повторити	';  //Текст для кнопки коли користувач хоче повторити тест
+const buttonTextStep4 = '	Повторити	';  //Текст для кнопки коли користувач хоче повторити тест
+const timeLimit = 10;   					//Максимальний час для проходження тесту(сек);
 
 
 const step1_blockClassName = 'uc-blockStep-1';	//Ім'я класу для блоку першого кроку
@@ -62,28 +62,70 @@ function StopwatchTest() {
 	// }
 }
 
+function CurrentTest(obj) {
+
+	const { textValue, category, questions } = obj;
+
+	this.numberQuestion = 0;
+	this.correctAnswers = 0;
+	this.isDuring = true;
+
+	this.getCurrentQuestion = () => {
+		if (this.numberQuestion + 1 >= questions.length) {
+			this.isDuring = false;
+		}
+
+		if (this.numberQuestion < questions.length) {
+			return questions[this.numberQuestion++];
+		} else {
+			// return this.isDuring;
+		}
+	}
+
+	Object.defineProperty(this, 'textValue', {
+		get: function () {
+			return textValue;
+		},
+	});
+
+	Object.defineProperty(this, 'category', {
+		get: function () {
+			return category;
+		},
+	});
+
+	Object.defineProperty(this, 'questions', {
+		get: function () {
+			return questions;
+		},
+	});
+}
+
+
 const stopwatchTest = new StopwatchTest(timeLimit);
 const progresStep = 1;
 
 
-document.addEventListener("DOMContentLoaded", () => {
-
-	// let currenetTest = ;
+document.addEventListener('DOMContentLoaded', () => {
+	console.log('DOMContentLoaded');
+	let currentTest;
 
 	const blockStep1 = document.getElementsByClassName(step1_blockClassName)[0];
 	const blockStep2 = document.getElementsByClassName(step2_BlockClassName)[0];
 	const blockStep3 = document.getElementsByClassName(step3_BlockClassName)[0];
+	const blockStep3Answers = blockStep3.querySelector('.t807__answers');
+	blockStep3Answers.innerHTML = '';
 
-	const button = document.querySelector('[href="#start-test"]');
+	const button = document.querySelector('[href="#start-read"]');
 	const stopWatch = document.getElementsByClassName('uc-stopwatch')[0];
 	const stopWatchDisplay = stopWatch.querySelector('b');
 
 	button.addEventListener('click', (e) => {
 		e.preventDefault();
 		if (!stopwatchTest.isRunning) {
-			startTest();
+			startRead();
 		} else {
-			stopTest();
+			stopRead();
 		}
 	});
 
@@ -95,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				blockStep3.style.display = 'none';
 				stopWatch.style.display = 'none';
 				button.textContent = buttonTextStep1;
-				console.log(stepNumber);
+				console.log('stepNumber= ' + stepNumber);
 				break;
 
 			case 2:
@@ -104,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				blockStep3.style.display = 'none';
 				stopWatch.style.display = 'block';
 				button.textContent = buttonTextStep2;
-				console.log(stepNumber);
+				console.log('stepNumber= ' + stepNumber);
 				break;
 
 			case 3:
@@ -113,26 +155,27 @@ document.addEventListener("DOMContentLoaded", () => {
 				stopWatch.style.display = 'none';
 				blockStep3.style.display = 'block';
 				button.style.display = 'none';
-				console.log(stepNumber);
+				console.log('stepNumber= ' + stepNumber);
 				break;
 			default:
 				break;
 		}
 	}
 
-	const startTest = () => {
+	const startRead = () => {
 		//обернуть в коллбек
 		const allTest = getAllText();
-		console.log(getRandomTest(allTest));
+		currentTest = new CurrentTest(getRandomTest(allTest, ''));
+		printTextValue(currentTest.textValue);
 		stopwatchTest.timerStart();
 		progresSetState(2);
 		printTimer();
 	}
 
-	const stopTest = () => {
+	const stopRead = () => {
 		stopwatchTest.timerStop();
 		progresSetState(3);
-		printQuetion(0);
+		printQuestion(currentTest.getCurrentQuestion());
 	};
 
 	const printTimer = () => {
@@ -143,23 +186,60 @@ document.addEventListener("DOMContentLoaded", () => {
 				const timeString = date.toISOString().substring(14, 19);
 				stopWatchDisplay.textContent = timeString;
 				if (stopwatchTest.timer >= timeLimit) {
-					stopTest();
+					stopRead();
 				}
 			}
 		}, 1000);
 	}
 
 	const getRandomTest = (testArray, filter = '') => {
-		console.log(testArray);
 		if (filter != '') {
-			testArray = testArray.filter(test => test.category == filter);
+			const filteredArray = testArray.filter(test => test.category == filter);
+			if (filteredArray.length > 0) {
+				testArray = filteredArray;
+			}
 		}
 		const rand = Math.floor(Math.random() * testArray.length);
 		return testArray[rand];
 	}
 
-	const printQuetion = (questionNumber) => {
-		console.log('questionNumber');
+	const printTextValue = (textValue) => {
+		blockStep2.querySelector('.t-text').textContent = textValue;
+	}
+
+
+	const printQuestion = (question) => {
+		blockStep3.querySelector('.t-name').textContent = question.question;
+		// for (let i = 0; i < question.answers.length; i++) {
+		blockStep3Answers.innerHTML = '';
+		question.answers.forEach((answer, index) => {
+			const voitItemHTML = `
+			<div class="t807__answer js-vote-item" data-answer-id="${index}">
+			<div class="t-radio__wrapper">
+			<label class="t807__answer-text t-radio__control t-descr t-descr_sm t-text_weight_plus">
+			<div class="t807__input-wrapper">
+			<input type="radio" name="${index}" value="${answer}" data-true-answer="${question.trueAnswer}" class="t807__input t-radio js-vote-btn" onchange="validQuestion(this)">
+			<div class="t807__answer-indicator t-radio__indicator"></div>
+			</div>
+			<span class="t807__answer-text_wrap">${answer}<br></span>
+			</label>
+			</div>
+			
+			<div class="t807__answer-progressbar" style=" background-color: #392ad4; opacity: 1;"></div>
+			
+			<div class="t-vote__btn-res t-descr t-descr_xs" style="display: none;">
+			<svg role="presentation" class="t807__answer-icon" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg>
+			<span class="t-vote__btn-res__num js-vote-count">0</span>
+			<span>(</span>
+			<span class="t-vote__btn-res__percent js-vote-percent">0%</span>
+			<span>)</span>
+			</div>
+			</div>
+			`;
+
+			blockStep3Answers.insertAdjacentHTML('beforeend', voitItemHTML);
+		});
+		// }
 	}
 
 	(function init() {
@@ -167,4 +247,27 @@ document.addEventListener("DOMContentLoaded", () => {
 		blockStep3.querySelector('a.js-sendvote-btn').parentElement.style.display = 'none';
 		progresSetState(1);
 	}());
+
+	window.validQuestion = (radio) => {
+		if (radio.value == radio.dataset.trueAnswer) {
+			currentTest.correctAnswers++;
+			radio.closest('.js-vote-item').style.background = 'green';
+		} else {
+			radio.closest('.js-vote-item').style.background = 'red';
+		}
+		nextQuestion();
+	}
+
+	const nextQuestion = () => {
+		if (currentTest.isDuring) {
+			setTimeout(() => {
+				printQuestion(currentTest.getCurrentQuestion());
+
+			}, 500);
+		} else {
+			console.log('next etap');
+		}
+	}
+
 });
+
