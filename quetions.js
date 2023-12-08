@@ -106,7 +106,7 @@ const htmlString = `
 
 let defaultTexts = [
     {
-        textValue: 'Текст 1',
+        textValue: 'Текст 1 Дорослі та підлітки.',
         category: 'Дорослі',
         questions: [
             {

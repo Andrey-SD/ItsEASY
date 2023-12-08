@@ -17,6 +17,7 @@ const timeLimit = 10;   					//Максимальний час для прохо
 const step1_blockClassName = 'uc-blockStep-1';	//Ім'я класу для блоку першого кроку
 const step2_BlockClassName = 'uc-blockStep-2';	//Ім'я класу для блоку другого кроку
 const step3_BlockClassName = 'uc-blockStep-3';	//Ім'я класу для блоку третього кроку
+const maxLenghtWord = 1;	//Кількість літер, більше якої треба рахувати слово
 
 
 // ******************************************************
@@ -100,7 +101,6 @@ function CurrentTest(obj) {
 		},
 	});
 }
-
 
 const stopwatchTest = new StopwatchTest(timeLimit);
 const progresStep = 1;
@@ -197,10 +197,15 @@ document.addEventListener('DOMContentLoaded', () => {
 	const prepareStatistic = () => {
 		const obj = {
 			time: 0,
-			wordCount: 0
+			wordCount: {
+				const text = currentTest.textValue;
+				const words = text.split(' ');
+				return words.filter(word => word.length > maxLenghtWord).length;
+			}
 		}
-		const str = currentTest.textValue;
-		obj.wordCount = str.split(' ').length + 1;
+		const text = currentTest.textValue;
+		const words = text.split(' ');
+		obj.wordCount = words.filter(word => word.length > maxLenghtWord).length;
 		console.log(obj.wordCount);
 
 		return obj;
@@ -234,7 +239,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	const printTextValue = (textValue) => {
 		blockStep2.querySelector('.t-text').textContent = textValue;
 	}
-
 
 	const printQuestion = (question) => {
 		blockStep3.querySelector('.t-name').textContent = question.question;
@@ -295,4 +299,3 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 
 });
-
