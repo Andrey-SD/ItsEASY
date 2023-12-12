@@ -12,7 +12,7 @@ const buttonTextStep2 = '	Прочитав	';  // Текст для кнопки
 const buttonTextStep3 = '	Повторити	';  // Текст для кнопки коли користувач хоче повторити тест
 const buttonTextStep4 = '	Повторити	';  // Текст для кнопки коли користувач хоче повторити тест
 const timeLimit = 300;   					// Максимальний час для проходження тесту(сек);
-const minLetterWord = 0;					// Мінімальна кількість літер у слові для підрахунку. 
+const minLetterWord = 1;					// Мінімальна кількість літер у слові для підрахунку. 
 
 
 const step1_blockClassName = 'uc-blockStep-1';	// Ім'я класу для блоку першого кроку.
@@ -111,7 +111,7 @@ const getAllText = () => {
 	if (http) {
 			return parseHTML(htmlString);
 	} else {
-			return defaultTexts;
+			return allTests;
 	}
 }
 
@@ -180,7 +180,6 @@ document.addEventListener('DOMContentLoaded', () => {
 				button.textContent = buttonTextStep4;
 				button.style.display = 'block';
 				break;
-
 			default:
 				break;
 		}
