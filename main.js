@@ -77,7 +77,6 @@ function CurrentTest(obj) {
 		if (this.numberQuestion < questions.length) {
 			return questions[this.numberQuestion++];
 		} else {
-			// return this.isDuring;
 		}
 	}
 	Object.defineProperty(this, 'textTitle', {
@@ -110,9 +109,9 @@ const stopwatchTest = new StopwatchTest(timeLimit);
 const getAllText = () => {
 	const http = false;
 	if (http) {
-		return parseHTML(htmlString);
+			return parseHTML(htmlString);
 	} else {
-		return defaultTexts;
+			return defaultTexts;
 	}
 }
 
@@ -120,9 +119,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	let currentTest;
 
 	const blockStep1 = document.getElementsByClassName(step1_blockClassName)[0];
-
+	
 	const blockStep2 = document.getElementsByClassName(step2_BlockClassName)[0];
-
+	
 	const blockStep3 = document.getElementsByClassName(step3_BlockClassName)[0];
 	const blockStep3Answers = blockStep3.querySelector('.js-vote-item').parentNode;
 	blockStep3Answers.innerHTML = '';
@@ -207,7 +206,6 @@ document.addEventListener('DOMContentLoaded', () => {
 			time: stopwatchTest.timer,
 			wordCount: 0
 		}
-
 		const str = currentTest.textValue;
 		const words = str.split(' ');
 		obj.wordCount = words.filter(word => word.length >= minLetterWord).length;
