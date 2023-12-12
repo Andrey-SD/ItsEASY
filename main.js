@@ -7,17 +7,18 @@
 // ******************************************************
 
 
-const buttonTextStep1 = '	Почати тест	';  //Текст для кнонки початку тесту
-const buttonTextStep2 = '	Прочитав	';  //Текст для кнопки коли користувач завершив читання
-const buttonTextStep3 = '	Повторити	';  //Текст для кнопки коли користувач хоче повторити тест
-const buttonTextStep4 = '	Повторити	';  //Текст для кнопки коли користувач хоче повторити тест
-const timeLimit = 10;   					//Максимальний час для проходження тесту(сек);
+const buttonTextStep1 = '	Почати тест	';  // Текст для кнонки початку тесту
+const buttonTextStep2 = '	Прочитав	';  // Текст для кнопки коли користувач завершив читання
+const buttonTextStep3 = '	Повторити	';  // Текст для кнопки коли користувач хоче повторити тест
+const buttonTextStep4 = '	Повторити	';  // Текст для кнопки коли користувач хоче повторити тест
+const timeLimit = 50;   					// Максимальний час для проходження тесту(сек);
+const minLetterWord = 0;					// Мінімальна кількість літер у слові для підрахунку. 
 
 
-const step1_blockClassName = 'uc-blockStep-1';	//Ім'я класу для блоку першого кроку
-const step2_BlockClassName = 'uc-blockStep-2';	//Ім'я класу для блоку другого кроку
-const step3_BlockClassName = 'uc-blockStep-3';	//Ім'я класу для блоку третього кроку
-const maxLenghtWord = 1;	//Кількість літер, більше якої треба рахувати слово
+const step1_blockClassName = 'uc-blockStep-1';	// Ім'я класу для блоку першого кроку.
+const step2_BlockClassName = 'uc-blockStep-2';	// Ім'я класу для блоку другого кроку.
+const step3_BlockClassName = 'uc-blockStep-3';	// Ім'я класу для блоку третього кроку.
+const step4_BlockClassName = 'uc-blockStep-4';	// Ім'я класу для блоку четвертого кроку.
 
 
 // ******************************************************
@@ -65,7 +66,8 @@ function StopwatchTest() {
 
 function CurrentTest(obj) {
 
-	const { textValue, category, questions } = obj;
+	const { category, questions } = obj;
+	const textValue = obj.textValue.replace(/[\s]+/g, ' ').trim();
 
 	this.numberQuestion = 0;
 	this.correctAnswers = 0;
@@ -103,8 +105,6 @@ function CurrentTest(obj) {
 }
 
 const stopwatchTest = new StopwatchTest(timeLimit);
-const progresStep = 1;
-
 
 document.addEventListener('DOMContentLoaded', () => {
 	console.log('DOMContentLoaded');
@@ -113,9 +113,18 @@ document.addEventListener('DOMContentLoaded', () => {
 	const blockStep1 = document.getElementsByClassName(step1_blockClassName)[0];
 	const blockStep2 = document.getElementsByClassName(step2_BlockClassName)[0];
 	const blockStep3 = document.getElementsByClassName(step3_BlockClassName)[0];
+	const blockStep4 = document.getElementsByClassName(step4_BlockClassName)[0];
+	const blockStep4ResultBlock = blockStep4.querySelector('.t-text');
+	
+	// **********************************************************
+	// **********************************************************
+	// Андрей, обрати внимание на селектор. ОН ПОЛАМАЕТЬСЯ!!!!!!!
 	const blockStep3Answers = blockStep3.querySelector('.t807__answers');
+	// Андрей, обрати внимание на селектор. ОН ПОЛАМАЕТЬСЯ!!!!!!!
+	// **********************************************************
 	blockStep3Answers.innerHTML = '';
-
+	
+	
 	const button = document.querySelector('[href="#start-read"]');
 	const stopWatch = document.getElementsByClassName('uc-stopwatch')[0];
 	const stopWatchDisplay = stopWatch.querySelector('b');
@@ -135,6 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				blockStep1.style.display = 'block';
 				blockStep2.style.display = 'none';
 				blockStep3.style.display = 'none';
+				blockStep4.style.display = 'none';
 				stopWatch.style.display = 'none';
 				button.textContent = buttonTextStep1;
 				console.log('stepNumber= ' + stepNumber);
@@ -144,6 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				blockStep1.style.display = 'none';
 				blockStep2.style.display = 'block';
 				blockStep3.style.display = 'none';
+				blockStep4.style.display = 'none';
 				stopWatch.style.display = 'block';
 				console.log('stepNumber= ' + stepNumber);
 				button.textContent = buttonTextStep2;
@@ -154,6 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				blockStep2.style.display = 'none';
 				stopWatch.style.display = 'none';
 				blockStep3.style.display = 'block';
+				blockStep4.style.display = 'none';
 				button.style.display = 'none';
 				console.log('stepNumber= ' + stepNumber);
 				break;
@@ -163,10 +175,12 @@ document.addEventListener('DOMContentLoaded', () => {
 				blockStep2.style.display = 'none';
 				stopWatch.style.display = 'none';
 				blockStep3.style.display = 'none';
+				blockStep4.style.display = 'block';
 				button.textContent = buttonTextStep4;
 				button.style.display = 'block';
 				console.log('stepNumber= ' + stepNumber);
 				break;
+
 			default:
 				break;
 		}
@@ -190,23 +204,24 @@ document.addEventListener('DOMContentLoaded', () => {
 	const showTestResult = (callBack) => {
 		progresSetState(4);
 		const statisticObj = callBack();
-		console.log(statisticObj.wordCount);
-		console.log('printHTML');
+
+
+		const strHTML = `
+		`;
+
+		blockStep4ResultBlock.innerHTML = strHTML;
 	}
 
 	const prepareStatistic = () => {
 		const obj = {
 			time: 0,
-			wordCount: {
-				const text = currentTest.textValue;
-				const words = text.split(' ');
-				return words.filter(word => word.length > maxLenghtWord).length;
-			}
+			wordCount: 
 		}
-		const text = currentTest.textValue;
-		const words = text.split(' ');
-		obj.wordCount = words.filter(word => word.length > maxLenghtWord).length;
-		console.log(obj.wordCount);
+
+		const str = currentTest.textValue;
+		const words = str.split(' ');
+		console.log(str, words);
+		obj.wordCount = words.filter(word => word.length >= minLetterWord).length;
 
 		return obj;
 	};
@@ -249,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			<div class="t-radio__wrapper">
 			<label class="t807__answer-text t-radio__control t-descr t-descr_sm t-text_weight_plus">
 			<div class="t807__input-wrapper">
-			<input type="radio" name="${index}" value="${answer}" data-true-answer="${question.trueAnswer}" class="t807__input t-radio js-vote-btn" onchange="validQuestion(this)">
+			<input type="radio" name="${index}" value="${index + 1}" data-true-answer="${question.trueAnswer}" class="t807__input t-radio js-vote-btn" onchange="validQuestion(this)">
 			<div class="t807__answer-indicator t-radio__indicator"></div>
 			</div>
 			<span class="t807__answer-text_wrap">${answer}<br></span>
