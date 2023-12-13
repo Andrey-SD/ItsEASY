@@ -17,20 +17,13 @@
 			box-sizing: content-box;
 		}
 
-		h1 {
-			/* margin-top: 20px; */
-		}
-
 		.fl {
-			/* display: flex; */
-			/* gap: 5px;
-			flex-direction: column; */
+			display: flex;
 		}
 
 		.testContainer {
 			padding: 10px;
 			margin: 10px 0;
-			
 		}
 
 		.testContainer:nth-child(even) {
@@ -48,10 +41,6 @@
 			font-family: 'Lucida Sans', sans-serif;
 		}
 
-		.testForm {
-			/* padding-bottom: 10px; */
-		}
-
 		.testForm button,
 		#addTestButton,
 		.addQuestionButton {
@@ -59,7 +48,6 @@
 			padding: 3px;
 			width: 100%;
 			margin: 10px auto;
-
 		}
 
 		#addTestButton {
@@ -83,79 +71,61 @@
 			width: 20px;
 			margin-right: 10px;
 		}
-
-		.separator {
-			border-bottom: 2px solid black;
-		}
 	</style>
-	<script src="allTexts.js"></script>
+	<script src="allTests.js"></script>
 </head>
 
 <body>
-	<div class="testContainer">
-		<h1>Тест 1</h1>
-		<form class="testForm">
-			<div class="fl">
-				<input type="text" name="textTitle" placeholder="Вкажіть назву тексту" required>
-				<input type="text" name="textValue" placeholder="Вкажіть категорію тесту" required>
-			</div>
-
-			<textarea rows="10" type="" name="category" placeholder="Вкажіть текст" required></textarea>
-			<div class="questionContainer">
-				<div class="question">
-					<fieldset class="itemContainer">
-						<legend>
-							<input type="text" name="question" placeholder="Вкажіть питання" required>
-						</legend>
-						<div style="display: flex;">
-							<input type="radio" name="trueAnswer" checked="checked">
-							<input type="text" name="answer" placeholder="Вкажіть варіант відповіді">
-						</div>
-						<div style="display: flex;">
-							<input type="radio" name="trueAnswer" checked="checked">
-							<input type="text" name="answer" placeholder="Вкажіть варіант відповіді">
-						</div>
-						<button onclick="addItem(this)">Додати варіант відповіді</button>
-					</fieldset>
+	<div id="main">
+		<div class="testContainer">
+			<h1>Тест 1</h1>
+			<form class="testForm">
+				<div>
+					<input type="text" name="textTitle" value="1" placeholder="Вкажіть назву тексту" required>
+					<input type="text" name="textValue" value="1" placeholder="Вкажіть категорію тесту" required>
 				</div>
 
-			</div>
-		</form>
-	</div>
-	<div class="testContainer">
-		<h1>Тест 1</h1>
-		<form class="testForm">
-			<div class="fl">
-				<input type="text" name="textTitle" placeholder="Вкажіть назву тексту" required>
-				<input type="text" name="textValue" placeholder="Вкажіть категорію тесту" required>
-			</div>
+				<textarea rows="10" type="" name="category" value="1" placeholder="Вкажіть текст" required></textarea>
+				<div class="questionContainer">
+					<div class="question">
+						<fieldset class="itemContainer">
+							<legend>
+								<input type="text" name="question" value="1" placeholder="Вкажіть питання" required>
+							</legend>
+							<div class="answerContainer">
 
-			<textarea rows="10" type="" name="category" placeholder="Вкажіть текст" required></textarea>
-			<div class="questionContainer">
-				<div class="question">
-					<fieldset class="itemContainer">
-						<legend>
-							<input type="text" name="question" placeholder="Вкажіть питання" required>
-						</legend>
-						<div style="display: flex;">
-							<input type="radio" name="trueAnswer" checked="checked">
-							<input type="text" name="answer" placeholder="Вкажіть варіант відповіді">
-						</div>
-						<div style="display: flex;">
-							<input type="radio" name="trueAnswer" checked="checked">
-							<input type="text" name="answer" placeholder="Вкажіть варіант відповіді">
-						</div>
-						<button onclick="addItem(this)">Додати варіант відповіді</button>
-					</fieldset>
+							</div>
+
+							<button onclick="addItem(this)">Додати варіант відповіді</button>
+						</fieldset>
+					</div>
 				</div>
-
-			</div>
-		</form>
+			</form>
+		</div>
 	</div>
 	<button class="addQuestionButton" onclick="addQuastion(this)">Додати питання</button>
 	<button id="addTestButton" onclick="addTest(this)">Зберегти</button>
 	<script>
-		console.log(defaultTexts);
+		document.addEventListener('DOMContentLoaded', () => {
+			const main = document.getElementById('main');
+		});
+
+
+		main.addEventListener('submit', (event) => {
+			event.preventDefault();
+		});
+
+		const addQuastion = (button) => {
+		};
+
+		const addItem = (button) => {
+			const answerContainer = button.closest('.itemContainer').querySelector('.answerContainer');
+			htmlStr = `<div class="fl">
+									<input type="radio" name="trueAnswer" checked="checked">
+									<input type="text" name="answer" placeholder="Вкажіть варіант відповіді">
+								</div>`;
+			answerContainer.insertAdjacentHTML('beforeend', htmlStr);
+		};
 	</script>
 </body>
 
