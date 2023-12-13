@@ -232,7 +232,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		<p>Час читання: <b style="font-size: 1.2em;">${prepireTimeStr(statisticObj.time)}</b></p>
 		<p>Швидкість читання: <b style="font-size: 1.2em;"> ${wordPS} </b> слів в хвилину</p>
 		<p>Розуміння тексту: <b style="font-size: 1.2em;">${understainText}%</b></p>
-		<p>Швидкість читання з урахуванням розуміння: <b style="font-size: 1.2em;">${understainTime}</b> слів в хвилину</p>
 		`;
 
 		blockStep4ResultBlock.innerHTML = strHTML;
