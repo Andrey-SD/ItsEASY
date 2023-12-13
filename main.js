@@ -9,8 +9,8 @@
 
 const buttonTextStep1 = '	Почати тест	';  // Текст для кнонки початку тесту
 const buttonTextStep2 = '	Прочитав	';  // Текст для кнопки коли користувач завершив читання
-const buttonTextStep3 = '	Повторити	';  // Текст для кнопки коли користувач хоче повторити тест
-const buttonTextStep4 = '	Повторити	';  // Текст для кнопки коли користувач хоче повторити тест
+const buttonTextStep3 = '	Хочеш покращити результат?	';  // Текст для кнопки коли користувач хоче повторити тест
+const buttonTextStep4 = '	Хочеш покращити результат?	';  // Текст для кнопки коли користувач хоче повторити тест
 const timeLimit = 300;   					// Максимальний час для проходження тесту(сек);
 const minLetterWord = 1;					// Мінімальна кількість літер у слові для підрахунку. 
 
@@ -309,9 +309,13 @@ document.addEventListener('DOMContentLoaded', () => {
 	window.validQuestion = (radio) => {
 		if (radio.value == radio.dataset.trueAnswer) {
 			currentTest.correctAnswers++;
-			radio.closest('.js-vote-item').style.background = 'green';
+			radio.closest('.js-vote-item').style.background = '#E6F4E7';
+			radio.closest('.js-vote-item').style.border = '2px solid #4AA181';
+			radio.closest('.js-vote-item').style.borderRadius = '5px';
 		} else {
-			radio.closest('.js-vote-item').style.background = 'red';
+			radio.closest('.js-vote-item').style.background = '#F4E6E7';
+			radio.closest('.js-vote-item').style.border = '2px solid #EFC2C1';
+			radio.closest('.js-vote-item').style.borderRadius = '5px';
 		}
 		nextQuestion();
 	}
