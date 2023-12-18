@@ -19,11 +19,13 @@
 
 		.fl {
 			display: flex;
+			align-items: center;
 		}
 
 		.testContainer {
 			padding: 10px;
 			margin: 10px 0;
+			position: relative;
 		}
 
 		.testContainer:nth-child(even) {
@@ -71,62 +73,137 @@
 			width: 20px;
 			margin-right: 10px;
 		}
+
+		label {
+			display: block;
+			margin-top: 15px;
+		}
+
+		legend input,
+		legend label {
+			margin-top: 5px;
+		}
+
+		.removeButton {
+			position: absolute;
+			right: 10px;
+			top: 10px;
+			padding: 0;
+			height: 16px;
+			box-sizing: content-box;
+		}
+
+		.removeButton:hover {
+			cursor: pointer;
+		}
 	</style>
 	<script src="allTests.js"></script>
 </head>
 
 <body>
-	<div id="main">
-		<div class="testContainer">
-			<h1>Тест 1</h1>
-			<form class="testForm">
-				<div>
-					<input type="text" name="textTitle" value="1" placeholder="Вкажіть назву тексту" required>
-					<input type="text" name="textValue" value="1" placeholder="Вкажіть категорію тесту" required>
-				</div>
+	<div id="main"></div>
+	<button class="addQuestionButton" onclick="addTest(this)">Додати тест</button>
+	<button id="addTestButton" onclick="generateObj()">Зберегти</button>
 
-				<textarea rows="10" type="" name="category" value="1" placeholder="Вкажіть текст" required></textarea>
-				<div class="questionContainer">
-					<div class="question">
-						<fieldset class="itemContainer">
-							<legend>
-								<input type="text" name="question" value="1" placeholder="Вкажіть питання" required>
-							</legend>
-							<div class="answerContainer">
-
-							</div>
-
-							<button onclick="addItem(this)">Додати варіант відповіді</button>
-						</fieldset>
-					</div>
-				</div>
-			</form>
-		</div>
-	</div>
-	<button class="addQuestionButton" onclick="addQuastion(this)">Додати питання</button>
-	<button id="addTestButton" onclick="addTest(this)">Зберегти</button>
 	<script>
-		document.addEventListener('DOMContentLoaded', () => {
-			const main = document.getElementById('main');
-		});
-
+		const main = document.getElementById('main');
+		let checkBoxName;
 
 		main.addEventListener('submit', (event) => {
 			event.preventDefault();
 		});
 
-		const addQuastion = (button) => {
-		};
+		const htmlItemStr = () => {
+			return `<div class="fl">
+						<input type="radio" name="id${checkBoxName}" checked="checked">
+						<input type="text" name="answer" placeholder="Вкажіть варіант відповіді" required>
+					</div>`;
+		}
 
 		const addItem = (button) => {
-			const answerContainer = button.closest('.itemContainer').querySelector('.answerContainer');
-			htmlStr = `<div class="fl">
-									<input type="radio" name="trueAnswer" checked="checked">
-									<input type="text" name="answer" placeholder="Вкажіть варіант відповіді">
-								</div>`;
-			answerContainer.insertAdjacentHTML('beforeend', htmlStr);
+			const form = button.closest('.testForm');
+			if (checkValidForm(form)) {
+				const answerContainer = button.closest('.itemContainer').querySelector('.answerContainer');
+				answerContainer.insertAdjacentHTML('beforeend', htmlItemStr());
+			}
+		}
+
+		const addQuastion = (button) => {
+			checkBoxName = new Date().valueOf();
+			const strHTML = `
+				<div class="questionContainer">
+					<div class="question">
+						<fieldset class="itemContainer">
+							<legend class="fl">
+								<label for="">Питання:</label>
+								<input type="text" name="question" value="text" placeholder="Вкажіть питання" required>
+							</legend>
+							<div class="answerContainer">
+								${htmlItemStr()}
+							</div>
+							<button onclick="addItem(this)">Додати варіант відповіді</button>
+						</fieldset>
+					</div>
+				</div>
+			`;
+			if (!checkInvalidForm('.testForm')) {
+				button.insertAdjacentHTML('beforebegin', strHTML);
+			}
+		}
+
+		const addTest = (button) => {
+			const htmlStr = `
+			<div class="testContainer">
+				<button class="removeButton" onclick="removeTest(this)"><svg xmlns="http://www.w3.org/2000/svg" x="0px"
+					y="0px" width="16" height="16" viewBox="0 0 26 26">
+					<path
+						d="M 11 -0.03125 C 10.164063 -0.03125 9.34375 0.132813 8.75 0.71875 C 8.15625 1.304688 7.96875 2.136719 7.96875 3 L 4 3 C 3.449219 3 3 3.449219 3 4 L 2 4 L 2 6 L 24 6 L 24 4 L 23 4 C 23 3.449219 22.550781 3 22 3 L 18.03125 3 C 18.03125 2.136719 17.84375 1.304688 17.25 0.71875 C 16.65625 0.132813 15.835938 -0.03125 15 -0.03125 Z M 11 2.03125 L 15 2.03125 C 15.546875 2.03125 15.71875 2.160156 15.78125 2.21875 C 15.84375 2.277344 15.96875 2.441406 15.96875 3 L 10.03125 3 C 10.03125 2.441406 10.15625 2.277344 10.21875 2.21875 C 10.28125 2.160156 10.453125 2.03125 11 2.03125 Z M 4 7 L 4 23 C 4 24.652344 5.347656 26 7 26 L 19 26 C 20.652344 26 22 24.652344 22 23 L 22 7 Z M 8 10 L 10 10 L 10 22 L 8 22 Z M 12 10 L 14 10 L 14 22 L 12 22 Z M 16 10 L 18 10 L 18 22 L 16 22 Z">
+					</path>
+				</svg></button>
+				<h1>Тест 1</h1>
+				<form class="testForm">
+					<div>
+						<label for="">Назва тексту:</label>
+						<input type="text" name="textTitle" value="text" placeholder="Вкажіть назву тексту" required>
+						<label for="">Категорія тексту:</label>
+						<input type="text" name="textValue" value="text" placeholder="Вкажіть категорію тесту" required>
+					</div>
+					<label for="">Текст:</label>
+					<textarea rows="10" type="" name="category" value="text" placeholder="Вкажіть текст" required spellcheck lang="uk"></textarea>
+					<button onclick="addQuastion(this)">Додати питання</button>
+				</form>
+			</div>
+			`;
+
+			const main = document.getElementById('main');
+			if (!checkInvalidForm('.testForm')) {
+				main.insertAdjacentHTML('beforeend', htmlStr);
+			}
+		}
+
+		const checkValidForm = (form) => {
+			return form.reportValidity();
+		}
+
+		const checkInvalidForm = (selector) => {
+			const testForms = Array.from(document.querySelectorAll(selector));
+			const invalidForm = testForms.filter(form => form.reportValidity() != true);
+			return invalidForm.length > 0 ? invalidForm : 0;
+		}
+
+		const generateObj = () => {
+			if (!checkInvalidForm('.testForm')) {
+				console.log('generated');
+			}
+		}
+
+		const removeTest = (button) => {
+			if (confirm('Ви дійсно бажаєте видалити  тест?')) {
+				button.closest('.testContainer').remove();
+			}
 		};
 	</script>
+
 </body>
 
 </html>
