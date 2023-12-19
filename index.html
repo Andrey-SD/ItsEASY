@@ -6,8 +6,77 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>ItsEASY</title>
 	<link rel="stylesheet" href="style.css">
+	<style>
+		#categoryListContainer {
+			display: flex;
+			justify-content: center;
+			gap: 30px;
+		}
+
+		.chooseCategoryBtn {
+			color: #ffffff;
+			font-size: 16px;
+			font-family: 'Roboto', Arial, sans-serif;
+			line-height: 1.55;
+			font-weight: 700;
+			border: 2px solid #7079f5;
+			border-radius: 30px;
+			background-color: #8e98ff;
+			padding: 5px 15px;
+		}
+
+		.chooseCategoryBtn:hover {
+			background-color: #8e97ffc5;
+		}
+
+		.dropdown {
+			position: relative;
+			display: inline-block;
+		}
+
+		.dropdown-content {
+			display: none;
+			position: absolute;
+			background-color: #f1f1f1;
+			width: 140px;
+			box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+			z-index: 1;
+			padding: 3px;
+		}
+
+		.dropdown-content button {
+			width: 100%;
+			display: block;
+			padding: 0;
+			margin-top: 3px;
+		}
+
+		.dropdown:hover .dropdown-content {
+			display: block;
+		}
+	</style>
+
 <body>
-<div id="rec673199734" class="r t-rec t-rec_pt_30 t-rec_pb_30 r_showed r_anim"
+
+
+	<div id="categoryListContainer">
+		<div class="dropdown">
+			<button class="chooseCategoryBtn dropbtn">6-10 років</button>
+			<div class="dropdown-content">
+				<button class="chooseCategoryBtn" onclick="startRead('1 клас')">1 клас</button>
+				<button class="chooseCategoryBtn" onclick="startRead('2 клас')">2 клас</button>
+				<button class="chooseCategoryBtn" onclick="startRead('3 клас')">3 клас</button>
+				<button class="chooseCategoryBtn" onclick="startRead('4 клас')">4 клас</button>
+			</div>
+		</div>
+		<button class="chooseCategoryBtn" onclick="startRead('11-15 років')">11-15 років</button>
+		<button class="chooseCategoryBtn" onclick="startRead('15+ років')">15+ років</button>
+	</div>
+
+
+
+
+	<div id="rec673199734" class="r t-rec t-rec_pt_30 t-rec_pb_30 r_showed r_anim"
 		style="padding-top:30px;padding-bottom:30px; " data-record-type="43"><!-- T030 -->
 		<div class="t030">
 			<div class="t-container t-align_center">

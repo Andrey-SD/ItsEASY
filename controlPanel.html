@@ -14,7 +14,6 @@
 
 		body {
 			padding: 0 5px;
-			box-sizing: content-box;
 		}
 
 		.fl {
@@ -62,11 +61,13 @@
 		}
 
 		.testForm input,
-		.testForm textarea {
+		.testForm textarea,
+		#codeTextArea {
 			width: 100%;
 			padding: 5px;
-			margin-top: 5px;
+			margin-top: 3px;
 			resize: none;
+
 		}
 
 		.testForm input[type="radio"] {
@@ -74,34 +75,80 @@
 			margin-right: 10px;
 		}
 
+		legend {
+			align-items: center;
+		}
+
 		label {
 			display: block;
-			margin-top: 15px;
+			margin-top: 10px;
 		}
 
 		legend input,
 		legend label {
-			margin-top: 5px;
+			margin-top: 1px;
 		}
 
 		.removeButton {
 			position: absolute;
 			right: 10px;
 			top: 10px;
-			padding: 0;
-			height: 16px;
-			box-sizing: content-box;
+			padding: 5px;
 		}
 
-		.removeButton:hover {
+
+		.removeItemButton {
+			width: 25px !important;
+			margin: 0 !important;
+			margin-left: 5px !important;
+			padding: 0 !important;
+			border: none;
+			background: none;
+		}
+
+		.removeButton:hover,
+		.removeItemButton:hover {
 			cursor: pointer;
+		}
+
+		.buttonContainer button {
+			flex: 1;
+			margin: 0 5px;
+		}
+
+		.buttonContainer {
+			width: 100%;
+			position: absolute;
+			height: 25px;
+			bottom: 5px;
+			left: 0;
+			justify-content: center;
+		}
+
+		#codeContainer {
+			position: relative;
+		}
+
+		#copyCodeButton {
+
+			/* width: 100%; */
+
 		}
 	</style>
 	<script src="allTests.js"></script>
 </head>
 
 <body>
-	<div id="main"></div>
+	<div id="codeContainer">
+		<textarea name="codeTextArea" id="codeTextArea" cols="30" rows="5" onchange="buildTestUI()"></textarea>
+		<div class="buttonContainer fl">
+			<button id="copyCodeButton" onclick="copyCode()">Копіювати код</button>
+			<button id="copyCodeButton" onclick="buildTestUI()">Створити тести</button>
+		</div>
+	</div>
+
+	<div id="main">
+	</div>
 	<button class="addQuestionButton" onclick="addTest(this)">Додати тест</button>
 	<button id="addTestButton" onclick="generateObj()">Зберегти</button>
 
@@ -113,10 +160,19 @@
 			event.preventDefault();
 		});
 
+		const replaceChar = (str) => {
+			return str.replace(/['"]/g, '&#34;').replace(/[*\/]/g, '').replace(/[ \t]+/g, ' ');
+		}
+
 		const htmlItemStr = () => {
-			return `<div class="fl">
-						<input type="radio" name="id${checkBoxName}" checked="checked">
+			return `<div class="fl answer">
+						<input type="radio" name="id${checkBoxName}">
 						<input type="text" name="answer" placeholder="Вкажіть варіант відповіді" required>
+						<button class="removeItemButton" onclick="removeBlock(this, 'answer')">
+							<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0 0 26 26">
+								<path d="M 11 -0.03125 C 10.164063 -0.03125 9.34375 0.132813 8.75 0.71875 C 8.15625 1.304688 7.96875 2.136719 7.96875 3 L 4 3 C 3.449219 3 3 3.449219 3 4 L 2 4 L 2 6 L 24 6 L 24 4 L 23 4 C 23 3.449219 22.550781 3 22 3 L 18.03125 3 C 18.03125 2.136719 17.84375 1.304688 17.25 0.71875 C 16.65625 0.132813 15.835938 -0.03125 15 -0.03125 Z M 11 2.03125 L 15 2.03125 C 15.546875 2.03125 15.71875 2.160156 15.78125 2.21875 C 15.84375 2.277344 15.96875 2.441406 15.96875 3 L 10.03125 3 C 10.03125 2.441406 10.15625 2.277344 10.21875 2.21875 C 10.28125 2.160156 10.453125 2.03125 11 2.03125 Z M 4 7 L 4 23 C 4 24.652344 5.347656 26 7 26 L 19 26 C 20.652344 26 22 24.652344 22 23 L 22 7 Z M 8 10 L 10 10 L 10 22 L 8 22 Z M 12 10 L 14 10 L 14 22 L 12 22 Z M 16 10 L 18 10 L 18 22 L 16 22 Z"></path>
+							</svg>
+						</button>
 					</div>`;
 		}
 
@@ -137,6 +193,11 @@
 							<legend class="fl">
 								<label for="">Питання:</label>
 								<input type="text" name="question" value="text" placeholder="Вкажіть питання" required>
+								<button class="removeItemButton" onclick="removeBlock(this, 'questionContainer')">
+							<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0 0 26 26">
+								<path d="M 11 -0.03125 C 10.164063 -0.03125 9.34375 0.132813 8.75 0.71875 C 8.15625 1.304688 7.96875 2.136719 7.96875 3 L 4 3 C 3.449219 3 3 3.449219 3 4 L 2 4 L 2 6 L 24 6 L 24 4 L 23 4 C 23 3.449219 22.550781 3 22 3 L 18.03125 3 C 18.03125 2.136719 17.84375 1.304688 17.25 0.71875 C 16.65625 0.132813 15.835938 -0.03125 15 -0.03125 Z M 11 2.03125 L 15 2.03125 C 15.546875 2.03125 15.71875 2.160156 15.78125 2.21875 C 15.84375 2.277344 15.96875 2.441406 15.96875 3 L 10.03125 3 C 10.03125 2.441406 10.15625 2.277344 10.21875 2.21875 C 10.28125 2.160156 10.453125 2.03125 11 2.03125 Z M 4 7 L 4 23 C 4 24.652344 5.347656 26 7 26 L 19 26 C 20.652344 26 22 24.652344 22 23 L 22 7 Z M 8 10 L 10 10 L 10 22 L 8 22 Z M 12 10 L 14 10 L 14 22 L 12 22 Z M 16 10 L 18 10 L 18 22 L 16 22 Z"></path>
+							</svg>
+						</button>
 							</legend>
 							<div class="answerContainer">
 								${htmlItemStr()}
@@ -154,22 +215,22 @@
 		const addTest = (button) => {
 			const htmlStr = `
 			<div class="testContainer">
-				<button class="removeButton" onclick="removeTest(this)"><svg xmlns="http://www.w3.org/2000/svg" x="0px"
-					y="0px" width="16" height="16" viewBox="0 0 26 26">
+				<button class="removeButton" onclick="removeBlock(this, 'testContainer')"><svg xmlns="http://www.w3.org/2000/svg" x="0px"
+					y="0px" width="24" height="24" viewBox="0 0 26 26">
 					<path
 						d="M 11 -0.03125 C 10.164063 -0.03125 9.34375 0.132813 8.75 0.71875 C 8.15625 1.304688 7.96875 2.136719 7.96875 3 L 4 3 C 3.449219 3 3 3.449219 3 4 L 2 4 L 2 6 L 24 6 L 24 4 L 23 4 C 23 3.449219 22.550781 3 22 3 L 18.03125 3 C 18.03125 2.136719 17.84375 1.304688 17.25 0.71875 C 16.65625 0.132813 15.835938 -0.03125 15 -0.03125 Z M 11 2.03125 L 15 2.03125 C 15.546875 2.03125 15.71875 2.160156 15.78125 2.21875 C 15.84375 2.277344 15.96875 2.441406 15.96875 3 L 10.03125 3 C 10.03125 2.441406 10.15625 2.277344 10.21875 2.21875 C 10.28125 2.160156 10.453125 2.03125 11 2.03125 Z M 4 7 L 4 23 C 4 24.652344 5.347656 26 7 26 L 19 26 C 20.652344 26 22 24.652344 22 23 L 22 7 Z M 8 10 L 10 10 L 10 22 L 8 22 Z M 12 10 L 14 10 L 14 22 L 12 22 Z M 16 10 L 18 10 L 18 22 L 16 22 Z">
 					</path>
 				</svg></button>
-				<h1>Тест 1</h1>
+				<h1 class="testTitle">Тест 1</h1>
 				<form class="testForm">
 					<div>
 						<label for="">Назва тексту:</label>
 						<input type="text" name="textTitle" value="text" placeholder="Вкажіть назву тексту" required>
 						<label for="">Категорія тексту:</label>
-						<input type="text" name="textValue" value="text" placeholder="Вкажіть категорію тесту" required>
+						<input type="text" name="textCategory" value="text" placeholder="Вкажіть категорію тесту" required>
 					</div>
 					<label for="">Текст:</label>
-					<textarea rows="10" type="" name="category" value="text" placeholder="Вкажіть текст" required spellcheck lang="uk"></textarea>
+					<textarea rows="10" type="" name="textValue" value="text" placeholder="Вкажіть текст" required spellcheck lang="uk"></textarea>
 					<button onclick="addQuastion(this)">Додати питання</button>
 				</form>
 			</div>
@@ -193,13 +254,125 @@
 
 		const generateObj = () => {
 			if (!checkInvalidForm('.testForm')) {
-				console.log('generated');
+				const allTests = [];
+				const testContainers = document.querySelectorAll('.testContainer');
+
+				testContainers.forEach(test => {
+					const testObj = {};
+					testObj.textTitle = test.querySelector('input[name="textTitle"]').value;
+					testObj.textValue = test.querySelector('textarea[name="textValue"]').value;
+					testObj.category = test.querySelector('input[name="textCategory"]').value;
+					testObj.questions = [];
+					const questionsElements = test.querySelectorAll('.question');
+					questionsElements.forEach(question => {
+						const questionObj = {};
+						questionObj.question = question.querySelector('input[name="question"]').value;
+						questionObj.question = question.querySelector('input[name="question"]').value;
+						const answersElements = question.querySelectorAll('.answer');
+						questionObj.answers = [];
+						answersElements.forEach((answerElement, index) => {
+							questionObj.answers.push(answerElement.querySelector('input[name="answer"]').value);
+							const checkState = answerElement.querySelector('input[type="radio"]').checked;
+							if (checkState) {
+								questionObj.trueAnswer = index + 1;
+							}
+						});
+						testObj.questions.push(questionObj);
+					});
+					allTests.push(testObj);
+				});
+				const allTestsJSON = JSON.stringify(allTests);
+				const codeTextArea = document.getElementById('codeTextArea');
+				codeTextArea.textContent = `<script>const allTests = ${allTestsJSON}<\/script>`;
 			}
 		}
 
-		const removeTest = (button) => {
-			if (confirm('Ви дійсно бажаєте видалити  тест?')) {
-				button.closest('.testContainer').remove();
+		const removeBlock = (button, elSelector) => {
+			if (confirm('Ви дійсно бажаєте видалити?')) {
+				button.closest(`.${elSelector}`).remove();
+			}
+		}
+
+		const copyCode = () => {
+			const codeTextArea = document.getElementById('codeTextArea');
+
+			codeTextArea.select();
+			codeTextArea.setSelectionRange(0, 9999999);
+
+			navigator.clipboard.writeText(codeTextArea.value);
+		}
+
+		const buildTestUI = () => {
+			const drawHTML = (obj) => {
+				const main = document.getElementById('main');
+				main.innerHTML = '';
+				obj.forEach(test => {
+					let questionContainerHTML = '';
+					test.questions.forEach(question => {
+						let anwerContainerHTML = '';
+						question.answers.forEach(answer => {
+							anwerContainerHTML = anwerContainerHTML.concat(
+								
+							);
+						});
+						questionContainerHTML = questionContainerHTML.concat(`
+							<div class="questionContainer">
+								<div class="question">
+									<fieldset class="itemContainer">
+										<legend class="fl">
+											<label for="">Питання:</label>
+											<input type="text" name="question" value="text" placeholder="Вкажіть питання" required>
+											<button class="removeItemButton" onclick="removeBlock(this, 'questionContainer')">
+										<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0 0 26 26">
+											<path d="M 11 -0.03125 C 10.164063 -0.03125 9.34375 0.132813 8.75 0.71875 C 8.15625 1.304688 7.96875 2.136719 7.96875 3 L 4 3 C 3.449219 3 3 3.449219 3 4 L 2 4 L 2 6 L 24 6 L 24 4 L 23 4 C 23 3.449219 22.550781 3 22 3 L 18.03125 3 C 18.03125 2.136719 17.84375 1.304688 17.25 0.71875 C 16.65625 0.132813 15.835938 -0.03125 15 -0.03125 Z M 11 2.03125 L 15 2.03125 C 15.546875 2.03125 15.71875 2.160156 15.78125 2.21875 C 15.84375 2.277344 15.96875 2.441406 15.96875 3 L 10.03125 3 C 10.03125 2.441406 10.15625 2.277344 10.21875 2.21875 C 10.28125 2.160156 10.453125 2.03125 11 2.03125 Z M 4 7 L 4 23 C 4 24.652344 5.347656 26 7 26 L 19 26 C 20.652344 26 22 24.652344 22 23 L 22 7 Z M 8 10 L 10 10 L 10 22 L 8 22 Z M 12 10 L 14 10 L 14 22 L 12 22 Z M 16 10 L 18 10 L 18 22 L 16 22 Z"></path>
+										</svg>
+									</button>
+										</legend>
+										<div class="answerContainer">
+										</div>
+										<button onclick="addItem(this)">Додати варіант відповіді</button>
+									</fieldset>
+								</div>
+							</div>`
+							);
+							console.log(questionContainerHTML);
+					});
+					const testContainerHTML = `
+					<div class="testContainer">
+						<button class="removeButton" onclick="removeBlock(this, 'testContainer')"><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24" viewBox="0 0 26 26">
+							<path d="M 11 -0.03125 C 10.164063 -0.03125 9.34375 0.132813 8.75 0.71875 C 8.15625 1.304688 7.96875 2.136719 7.96875 3 L 4 3 C 3.449219 3 3 3.449219 3 4 L 2 4 L 2 6 L 24 6 L 24 4 L 23 4 C 23 3.449219 22.550781 3 22 3 L 18.03125 3 C 18.03125 2.136719 17.84375 1.304688 17.25 0.71875 C 16.65625 0.132813 15.835938 -0.03125 15 -0.03125 Z M 11 2.03125 L 15 2.03125 C 15.546875 2.03125 15.71875 2.160156 15.78125 2.21875 C 15.84375 2.277344 15.96875 2.441406 15.96875 3 L 10.03125 3 C 10.03125 2.441406 10.15625 2.277344 10.21875 2.21875 C 10.28125 2.160156 10.453125 2.03125 11 2.03125 Z M 4 7 L 4 23 C 4 24.652344 5.347656 26 7 26 L 19 26 C 20.652344 26 22 24.652344 22 23 L 22 7 Z M 8 10 L 10 10 L 10 22 L 8 22 Z M 12 10 L 14 10 L 14 22 L 12 22 Z M 16 10 L 18 10 L 18 22 L 16 22 Z">
+							</path>
+						</svg></button>
+						<h1 class="testTitle">Тест 2</h1>
+						<form class="testForm">
+							<div>
+								<label for="">Назва тексту:</label>
+								<input type="text" name="textTitle" value="${test.textTitle}" placeholder="${test.textValue}" required="">
+								<label for="">Категорія тексту:</label>
+								<input type="text" name="textCategory" value="${test.category}" placeholder="${test.category}" required="">
+							</div>
+							<label for="">Текст:</label>
+							<textarea rows="10" type="" name="textValue" value="${test.textValue}" placeholder="${test.textValue}" required="" spellcheck="" lang="uk">${test.textValue}</textarea>
+							${questionContainerHTML}
+							<button onclick="addQuastion(this)">Додати питання</button>
+						</form>
+					</div>`;
+					main.insertAdjacentHTML('beforeend', testContainerHTML);
+				});
+			};
+
+			const codeTextArea = document.getElementById('codeTextArea').value;
+			const startPosition = codeTextArea.indexOf('[');
+			const endPosition = codeTextArea.indexOf('\</script');
+			if (startPosition != -1 && endPosition != -1) {
+				const testJSON = codeTextArea.slice(startPosition, endPosition);
+				console.log(testJSON);
+				const allTests = JSON.parse(testJSON);
+				console.log(allTests);
+				drawHTML(allTests);
+				
+			} else {
+				alert('Помилка при обробці коду');
 			}
 		};
 	</script>

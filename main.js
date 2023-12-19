@@ -9,12 +9,12 @@
 
 const buttonTextStep1 = '	Почати тест	';  // Текст для кнонки початку тесту
 const buttonTextStep2 = '	Прочитав	';  // Текст для кнопки коли користувач завершив читання
-const buttonTextStep3 = '	Хочеш покращити результат?	';  // Текст для кнопки коли користувач хоче повторити тест
+// const buttonTextStep3 = '	Хочеш покращити результат?	';  // Текст для кнопки коли користувач хоче повторити тест
 const buttonTextStep4 = '	Хочеш покращити результат?	';  // Текст для кнопки коли користувач хоче повторити тест
 const timeLimit = 300;   					// Максимальний час для проходження тесту(сек);
 const minLetterWord = 1;					// Мінімальна кількість літер у слові для підрахунку. 
 
-
+const step1_categoryList = 'categoryListContainer';	// Ім'я ідентифікатора для блоку з кнопками категоріями.
 const step1_blockClassName = 'uc-blockStep-1';	// Ім'я класу для блоку першого кроку.
 const step2_BlockClassName = 'uc-blockStep-2';	// Ім'я класу для блоку другого кроку.
 const step2_BlockTextTitle = '[field="title"]';	// селектор для блоку з заголовком текстом.
@@ -32,246 +32,256 @@ const step4_BlockClassName = 'uc-blockStep-4';	// Ім'я класу для бл
 //  Добавить исключения на переменые, есть они или нет
 // ******************************************************
 
-function StopwatchTest() {
-	let intervalID = undefined;
-	this.timer = 0;
-	this.isRunning = false;
-
-	this.timerCount = () => {
-		if (this.isRunning) {
-			this.timer++;
-		} else {
-			this.timer = 0;
-			console.warn('Timer is stoped');
-		}
-	}
-
-	this.timerStop = () => {
-		this.isRunning = false;
-		clearInterval(intervalID);
-	}
-
-	this.timerStart = () => {
+class StopwatchTest {
+	constructor() {
+		let intervalID = undefined;
 		this.timer = 0;
-		this.isRunning = true;
-		intervalID = setInterval(() => {
-			this.timerCount();
-		}, 1000);
+		this.isRunning = false;
+
+		this.timerCount = () => {
+			if (this.isRunning) {
+				this.timer++;
+			} else {
+				this.timer = 0;
+				console.warn('Timer is stoped');
+			}
+		};
+
+		this.timerStop = () => {
+			this.isRunning = false;
+			clearInterval(intervalID);
+		};
+
+		this.timerStart = () => {
+			this.timer = 0;
+			this.isRunning = true;
+			intervalID = setInterval(() => {
+				this.timerCount();
+			}, 1000);
+		};
 	}
 }
 
-function CurrentTest(obj) {
+class CurrentTest {
+	constructor(obj) {
 
-	const { category, questions, textTitle } = obj;
-	const textValue = obj.textValue.replace(/[\s]+/g, ' ').trim();
+		const { category, questions, textTitle } = obj;
+		const textValue = obj.textValue.replace(/[\s]+/g, ' ').trim();
 
-	this.numberQuestion = 0;
-	this.correctAnswers = 0;
-	this.isDuring = true;
+		this.numberQuestion = 0;
+		this.correctAnswers = 0;
+		this.isDuring = true;
 
-	this.getCurrentQuestion = () => {
-		if (this.numberQuestion + 1 >= questions.length) {
-			this.isDuring = false;
-		}
+		this.getCurrentQuestion = () => {
+			if (this.numberQuestion + 1 >= questions.length) {
+				this.isDuring = false;
+			}
 
-		if (this.numberQuestion < questions.length) {
-			return questions[this.numberQuestion++];
-		} else {
-		}
+			if (this.numberQuestion < questions.length) {
+				return questions[this.numberQuestion++];
+			} else {
+			}
+		};
+		Object.defineProperty(this, 'textTitle', {
+			get: function () {
+				return textTitle;
+			},
+		});
+
+		Object.defineProperty(this, 'textValue', {
+			get: function () {
+				return textValue;
+			},
+		});
+
+		Object.defineProperty(this, 'category', {
+			get: function () {
+				return category;
+			},
+		});
+
+		Object.defineProperty(this, 'questions', {
+			get: function () {
+				return questions;
+			},
+		});
 	}
-	Object.defineProperty(this, 'textTitle', {
-		get: function () {
-			return textTitle;
-		},
-	});
-
-	Object.defineProperty(this, 'textValue', {
-		get: function () {
-			return textValue;
-		},
-	});
-
-	Object.defineProperty(this, 'category', {
-		get: function () {
-			return category;
-		},
-	});
-
-	Object.defineProperty(this, 'questions', {
-		get: function () {
-			return questions;
-		},
-	});
 }
 
 const stopwatchTest = new StopwatchTest(timeLimit);
 
-const getAllText = () => {
+const getAllTest = () => {
 	const http = false;
 	if (http) {
-			return parseHTML(htmlString);
+		return parseHTML(htmlString);
 	} else {
-			return allTests;
+		return allTests;
 	}
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-	let currentTest;
+// document.addEventListener('DOMContentLoaded', () => {
+let currentTest;
 
-	const blockStep1 = document.getElementsByClassName(step1_blockClassName)[0];
-	
-	const blockStep2 = document.getElementsByClassName(step2_BlockClassName)[0];
-	
-	const blockStep3 = document.getElementsByClassName(step3_BlockClassName)[0];
-	const blockStep3Answers = blockStep3.querySelector('.js-vote-item').parentNode;
-	blockStep3Answers.innerHTML = '';
+const blockStep1 = document.getElementsByClassName(step1_blockClassName)[0];
+const blockCategoryList = document.getElementById(step1_categoryList);
+console.log(blockCategoryList);
 
-	const blockStep4 = document.getElementsByClassName(step4_BlockClassName)[0];
-	const blockStep4ResultBlock = blockStep4.querySelector('.t-text');
+const blockStep2 = document.getElementsByClassName(step2_BlockClassName)[0];
 
-	const button = document.querySelector('[href="#start-read"]');
-	const stopWatch = document.getElementsByClassName('uc-stopwatch')[0];
-	const stopWatchDisplay = stopWatch.querySelector('b');
+const blockStep3 = document.getElementsByClassName(step3_BlockClassName)[0];
+const blockStep3Answers = blockStep3.querySelector('.js-vote-item').parentNode;
+blockStep3Answers.innerHTML = '';
 
-	button.addEventListener('click', (e) => {
-		e.preventDefault();
-		if (!stopwatchTest.isRunning) {
-			startRead();
-		} else {
-			stopRead();
-		}
-	});
+const blockStep4 = document.getElementsByClassName(step4_BlockClassName)[0];
+const blockStep4ResultBlock = blockStep4.querySelector('.t-text');
 
-	const progresSetState = (stepNumber) => {
-		switch (stepNumber) {
-			case 1:
-				blockStep1.style.display = 'block';
-				blockStep2.style.display = 'none';
-				blockStep3.style.display = 'none';
-				blockStep4.style.display = 'none';
-				stopWatch.style.display = 'none';
-				button.textContent = buttonTextStep1;
-				break;
+const startTestbutton = document.querySelector('[href="#start-read"]');
+const stopWatch = document.getElementsByClassName('uc-stopwatch')[0];
+const stopWatchDisplay = stopWatch.querySelector('b');
 
-			case 2:
-				blockStep1.style.display = 'none';
-				blockStep2.style.display = 'block';
-				blockStep3.style.display = 'none';
-				blockStep4.style.display = 'none';
-				stopWatch.style.display = 'block';
-				button.textContent = buttonTextStep2;
-				break;
+startTestbutton.addEventListener('click', (e) => {
+	e.preventDefault();
+	if (!stopwatchTest.isRunning) {
+		startRead();
+	} else {
+		stopRead();
+	}
+});
 
-			case 3:
-				blockStep1.style.display = 'none';
-				blockStep2.style.display = 'none';
-				stopWatch.style.display = 'none';
-				blockStep3.style.display = 'block';
-				blockStep4.style.display = 'none';
-				button.style.display = 'none';
-				break;
+const progresSetState = (stepNumber) => {
+	switch (stepNumber) {
+		case 1:
+			blockStep1.style.display = 'block';
+			blockCategoryList.style.display = 'flex';
+			blockStep2.style.display = 'none';
+			blockStep3.style.display = 'none';
+			blockStep4.style.display = 'none';
+			stopWatch.style.display = 'none';
+			startTestbutton.textContent = buttonTextStep1;
+			break;
 
-			case 4:
-				blockStep1.style.display = 'none';
-				blockStep2.style.display = 'none';
-				stopWatch.style.display = 'none';
-				blockStep3.style.display = 'none';
-				blockStep4.style.display = 'block';
-				button.textContent = buttonTextStep4;
-				button.style.display = 'block';
-				break;
-			default:
-				break;
-		}
+		case 2:
+			blockStep1.style.display = 'none';
+			blockCategoryList.style.display = 'none';
+			blockStep2.style.display = 'block';
+			blockStep3.style.display = 'none';
+			blockStep4.style.display = 'none';
+			stopWatch.style.display = 'block';
+			startTestbutton.textContent = buttonTextStep2;
+			break;
+
+		case 3:
+			blockStep1.style.display = 'none';
+			blockCategoryList.style.display = 'none';
+			blockStep2.style.display = 'none';
+			stopWatch.style.display = 'none';
+			blockStep3.style.display = 'block';
+			blockStep4.style.display = 'none';
+			startTestbutton.style.display = 'none';
+			break;
+
+		case 4:
+			blockStep1.style.display = 'none';
+			blockCategoryList.style.display = 'none';
+			blockStep2.style.display = 'none';
+			stopWatch.style.display = 'none';
+			blockStep3.style.display = 'none';
+			blockStep4.style.display = 'block';
+			startTestbutton.textContent = buttonTextStep4;
+			startTestbutton.style.display = 'table-cell';
+			break;
+		default:
+			break;
+	}
+}
+
+const startRead = (category = '') => {
+	const allTest = getAllTest();
+	currentTest = new CurrentTest(getRandomTest(allTest, category));
+	printTextValue();
+	stopwatchTest.timerStart();
+	progresSetState(2);
+	printTimer();
+}
+
+const stopRead = () => {
+	stopwatchTest.timerStop();
+	progresSetState(3);
+	printQuestion(currentTest.getCurrentQuestion());
+};
+
+const prepareStatistic = () => {
+	const obj = {
+		time: stopwatchTest.timer,
+		wordCount: 0
+	}
+	const str = currentTest.textValue;
+	const words = str.split(' ');
+	obj.wordCount = words.filter(word => word.length >= minLetterWord).length;
+	return obj;
+};
+
+const showTestResult = () => {
+	progresSetState(4);
+	const statisticObj = prepareStatistic();
+	const prepireTimeStr = (time) => {
+		const date = new Date(0);
+		date.setSeconds(time);
+		const mm = date.toISOString().substring(15, 16);
+		const ss = date.toISOString().substring(17, 19) + 'сек';
+		const timeStr = (mm == '00') ? ss : mm + 'хв ' + ss;
+		return timeStr;
 	}
 
-	const startRead = () => {
-		const allTest = getAllText();
-		currentTest = new CurrentTest(getRandomTest(allTest, ''));
-		printTextValue();
-		stopwatchTest.timerStart();
-		progresSetState(2);
-		printTimer();
-	}
+	const wordPS = Math.floor(statisticObj.wordCount * 60 / statisticObj.time);
+	const understainText = Math.floor(currentTest.correctAnswers * 100 / currentTest.questions.length);
+	// const understainTime = Math.floor(wordPS / 100 * understainText);
 
-	const stopRead = () => {
-		stopwatchTest.timerStop();
-		progresSetState(3);
-		printQuestion(currentTest.getCurrentQuestion());
-	};
-
-	const prepareStatistic = () => {
-		const obj = {
-			time: stopwatchTest.timer,
-			wordCount: 0
-		}
-		const str = currentTest.textValue;
-		const words = str.split(' ');
-		obj.wordCount = words.filter(word => word.length >= minLetterWord).length;
-		return obj;
-	};
-
-	const showTestResult = () => {
-		progresSetState(4);
-		const statisticObj = prepareStatistic();
-		const prepireTimeStr = (time) => {
-			const date = new Date(0);
-			date.setSeconds(time);
-			const mm = date.toISOString().substring(15, 16);
-			const ss = date.toISOString().substring(17, 19) + 'сек';
-			const timeStr = (mm == '00') ? ss : mm + 'хв ' + ss;
-			return timeStr;
-		}
-
-		const wordPS = Math.floor(statisticObj.wordCount * 60 / statisticObj.time);
-		const understainText = Math.floor(currentTest.correctAnswers * 100 / currentTest.questions.length);
-		const understainTime = Math.floor(wordPS / 100 * understainText);
-
-		const strHTML = `
+	const strHTML = `
 		<p>Слів у тексті: <b style="font-size: 1.2em;">${statisticObj.wordCount}</b></p>
 		<p>Час читання: <b style="font-size: 1.2em;">${prepireTimeStr(statisticObj.time)}</b></p>
 		<p>Швидкість читання: <b style="font-size: 1.2em;"> ${wordPS} </b> слів в хвилину</p>
 		<p>Розуміння тексту: <b style="font-size: 1.2em;">${understainText}%</b></p>
 		`;
 
-		blockStep4ResultBlock.innerHTML = strHTML;
-	}
+	blockStep4ResultBlock.innerHTML = strHTML;
+}
 
-	const printTimer = () => {
-		setInterval(() => {
-			if (stopwatchTest.isRunning) {
-				const date = new Date(0);
-				date.setSeconds(stopwatchTest.timer);
-				const timeString = date.toISOString().substring(14, 19);
-				stopWatchDisplay.textContent = timeString;
-				if (stopwatchTest.timer >= timeLimit) {
-					stopRead();
-				}
-			}
-		}, 1000);
-	}
-
-	const getRandomTest = (testArray, filter = '') => {
-		if (filter != '') {
-			const filteredArray = testArray.filter(test => test.category == filter);
-			if (filteredArray.length > 0) {
-				testArray = filteredArray;
+const printTimer = () => {
+	setInterval(() => {
+		if (stopwatchTest.isRunning) {
+			const date = new Date(0);
+			date.setSeconds(stopwatchTest.timer);
+			const timeString = date.toISOString().substring(14, 19);
+			stopWatchDisplay.textContent = timeString;
+			if (stopwatchTest.timer >= timeLimit) {
+				stopRead();
 			}
 		}
-		const rand = Math.floor(Math.random() * testArray.length);
-		return testArray[rand];
-	}
+	}, 1000);
+}
 
-	const printTextValue = () => {
-		blockStep2.querySelector(step2_BlockTextTitle).textContent = currentTest.textTitle;
-		blockStep2.querySelector(step2_BlockTextValue).textContent = currentTest.textValue;
+const getRandomTest = (testArray, filter = '') => {
+	if (filter != '') {
+		const filteredArray = testArray.filter(test => test.category == filter);
+		if (filteredArray.length > 0) {
+			testArray = filteredArray;
+		}
 	}
+	const rand = Math.floor(Math.random() * testArray.length);
+	return testArray[rand];
+}
 
-	const printQuestion = (question) => {
-		blockStep3.querySelector('.t-name').textContent = question.question;
-		blockStep3Answers.innerHTML = '';
-		question.answers.forEach((answer, index) => {
-			const voitItemHTML = `
+const printTextValue = () => {
+	blockStep2.querySelector(step2_BlockTextTitle).textContent = currentTest.textTitle;
+	blockStep2.querySelector(step2_BlockTextValue).textContent = currentTest.textValue;
+}
+
+const printQuestion = (question) => {
+	blockStep3.querySelector('.t-name').textContent = question.question;
+	blockStep3Answers.innerHTML = '';
+	question.answers.forEach((answer, index) => {
+		const voitItemHTML = `
 			<div class="t807__answer js-vote-item" data-answer-id="${index}">
 			<div class="t-radio__wrapper">
 			<label class="t807__answer-text t-radio__control t-descr t-descr_sm t-text_weight_plus">
@@ -295,38 +305,38 @@ document.addEventListener('DOMContentLoaded', () => {
 			</div>
 			`;
 
-			blockStep3Answers.insertAdjacentHTML('beforeend', voitItemHTML);
-		});
+		blockStep3Answers.insertAdjacentHTML('beforeend', voitItemHTML);
+	});
+}
+
+(function init() {
+	stopWatchDisplay.textContent = '00:00';
+	blockStep3.querySelector('a.js-sendvote-btn').parentElement.style.display = 'none';
+	progresSetState(1);
+}());
+
+const validQuestion = (radio) => {
+	if (radio.value == radio.dataset.trueAnswer) {
+		currentTest.correctAnswers++;
+		radio.closest('.js-vote-item').style.background = '#E6F4E7';
+		radio.closest('.js-vote-item').style.border = '2px solid #4AA181';
+		radio.closest('.js-vote-item').style.borderRadius = '5px';
+	} else {
+		radio.closest('.js-vote-item').style.background = '#F4E6E7';
+		radio.closest('.js-vote-item').style.border = '2px solid #EFC2C1';
+		radio.closest('.js-vote-item').style.borderRadius = '5px';
 	}
+	nextQuestion();
+}
 
-	(function init() {
-		stopWatchDisplay.textContent = '00:00';
-		blockStep3.querySelector('a.js-sendvote-btn').parentElement.style.display = 'none';
-		progresSetState(1);
-	}());
-
-	window.validQuestion = (radio) => {
-		if (radio.value == radio.dataset.trueAnswer) {
-			currentTest.correctAnswers++;
-			radio.closest('.js-vote-item').style.background = '#E6F4E7';
-			radio.closest('.js-vote-item').style.border = '2px solid #4AA181';
-			radio.closest('.js-vote-item').style.borderRadius = '5px';
-		} else {
-			radio.closest('.js-vote-item').style.background = '#F4E6E7';
-			radio.closest('.js-vote-item').style.border = '2px solid #EFC2C1';
-			radio.closest('.js-vote-item').style.borderRadius = '5px';
-		}
-		nextQuestion();
+const nextQuestion = () => {
+	if (currentTest.isDuring) {
+		setTimeout(() => {
+			printQuestion(currentTest.getCurrentQuestion());
+		}, 500);
+	} else {
+		showTestResult();
 	}
+}
 
-	const nextQuestion = () => {
-		if (currentTest.isDuring) {
-			setTimeout(() => {
-				printQuestion(currentTest.getCurrentQuestion());
-			}, 500);
-		} else {
-			showTestResult();
-		}
-	}
-
-});
+// });
