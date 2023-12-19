@@ -65,46 +65,23 @@ class StopwatchTest {
 class CurrentTest {
 	constructor(obj) {
 
-		const { category, questions, textTitle } = obj;
-		const textValue = obj.textValue.replace(/[\s]+/g, ' ').trim();
+		Object.assign(this, obj);
+		this.textValue = this.textValue.replace(/[\s]+/g, ' ').trim();
 
 		this.numberQuestion = 0;
 		this.correctAnswers = 0;
 		this.isDuring = true;
 
 		this.getCurrentQuestion = () => {
-			if (this.numberQuestion + 1 >= questions.length) {
+			if (this.numberQuestion + 1 >= this.questions.length) {
 				this.isDuring = false;
 			}
 
-			if (this.numberQuestion < questions.length) {
-				return questions[this.numberQuestion++];
+			if (this.numberQuestion < this.questions.length) {
+				return this.questions[this.numberQuestion++];
 			} else {
 			}
 		};
-		Object.defineProperty(this, 'textTitle', {
-			get: function () {
-				return textTitle;
-			},
-		});
-
-		Object.defineProperty(this, 'textValue', {
-			get: function () {
-				return textValue;
-			},
-		});
-
-		Object.defineProperty(this, 'category', {
-			get: function () {
-				return category;
-			},
-		});
-
-		Object.defineProperty(this, 'questions', {
-			get: function () {
-				return questions;
-			},
-		});
 	}
 }
 
@@ -124,7 +101,6 @@ let currentTest;
 
 const blockStep1 = document.getElementsByClassName(step1_blockClassName)[0];
 const blockCategoryList = document.getElementById(step1_categoryList);
-console.log(blockCategoryList);
 
 const blockStep2 = document.getElementsByClassName(step2_BlockClassName)[0];
 
@@ -274,7 +250,11 @@ const getRandomTest = (testArray, filter = '') => {
 
 const printTextValue = () => {
 	blockStep2.querySelector(step2_BlockTextTitle).textContent = currentTest.textTitle;
-	blockStep2.querySelector(step2_BlockTextValue).textContent = currentTest.textValue;
+	const step2_BlockText = blockStep2.querySelector(step2_BlockTextValue);
+	step2_BlockText.textContent = currentTest.textValue;
+	step2_BlockText.style.fontSize = `${currentTest.textFontSize}px`;
+	// step2_BlockText.style.background = 'red';
+	console.log(`${currentTest.textFontSize}px`);
 }
 
 const printQuestion = (question) => {
