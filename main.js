@@ -16,6 +16,7 @@ const minLetterWord = 1;					// Мінімальна кількість літе
 
 const step1_categoryList = 'categoryListContainer';	// Ім'я ідентифікатора для блоку з кнопками категоріями.
 const step1_blockClassName = 'uc-blockStep-1';	// Ім'я класу для блоку першого кроку.
+const step1_startTest_btn = 'uc-start-read';	// Ім'я класу для блоку першого кроку.
 const step2_BlockClassName = 'uc-blockStep-2';	// Ім'я класу для блоку другого кроку.
 const step2_BlockTextTitle = '[field="title"]';	// селектор для блоку з заголовком текстом.
 const step2_BlockTextValue = '[field="text"]';	// селектор для блоку з текстом тесту.
@@ -110,30 +111,34 @@ blockStep3Answers.innerHTML = '';
 
 const blockStep4 = document.getElementsByClassName(step4_BlockClassName)[0];
 const blockStep4ResultBlock = blockStep4.querySelector('.t-text');
-
-const startTestbutton = document.querySelector('[href="#start-read"]');
+// [href="#start-read"]
+const startTestButton = document.getElementsByClassName(step1_startTest_btn)[0].querySelector('a');
 const stopWatch = document.getElementsByClassName('uc-stopwatch')[0];
 const stopWatchDisplay = stopWatch.querySelector('b');
 
-startTestbutton.addEventListener('click', (e) => {
+const clickHandler = (e) => {
 	e.preventDefault();
 	if (!stopwatchTest.isRunning) {
 		startRead();
 	} else {
 		stopRead();
+		startTestButton.removeEventListener('click', clickHandler);
 	}
-});
+};
+
+startTestButton.addEventListener('click', clickHandler);
 
 const progresSetState = (stepNumber) => {
 	switch (stepNumber) {
 		case 1:
+			// console.log(startTestButton);
 			blockStep1.style.display = 'block';
 			blockCategoryList.style.display = 'flex';
 			blockStep2.style.display = 'none';
 			blockStep3.style.display = 'none';
 			blockStep4.style.display = 'none';
 			stopWatch.style.display = 'none';
-			startTestbutton.textContent = buttonTextStep1;
+			startTestButton.textContent = buttonTextStep1;
 			break;
 
 		case 2:
@@ -143,7 +148,7 @@ const progresSetState = (stepNumber) => {
 			blockStep3.style.display = 'none';
 			blockStep4.style.display = 'none';
 			stopWatch.style.display = 'block';
-			startTestbutton.textContent = buttonTextStep2;
+			startTestButton.textContent = buttonTextStep2;
 			break;
 
 		case 3:
@@ -153,7 +158,7 @@ const progresSetState = (stepNumber) => {
 			stopWatch.style.display = 'none';
 			blockStep3.style.display = 'block';
 			blockStep4.style.display = 'none';
-			startTestbutton.style.display = 'none';
+			startTestButton.style.display = 'none';
 			break;
 
 		case 4:
@@ -163,8 +168,9 @@ const progresSetState = (stepNumber) => {
 			stopWatch.style.display = 'none';
 			blockStep3.style.display = 'none';
 			blockStep4.style.display = 'block';
-			startTestbutton.textContent = buttonTextStep4;
-			startTestbutton.style.display = 'table-cell';
+			startTestButton.textContent = buttonTextStep4;
+			startTestButton.style.display = 'table-cell';
+
 			break;
 		default:
 			break;
