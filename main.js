@@ -19,8 +19,9 @@ const minLetterWord = 1;					// Мінімальна кількість літе
 // ******************************************************
 
 const step1_categoryList = 'categoryListContainer';	// Ім'я ідентифікатора для блоку з кнопками категоріями.
-const step1_blockClassName = 'uc-blockStep-1';	// Ім'я класу для блоку першого кроку.
+const classStep1Block = 'uc-blockStep-1';	// Ім'я класу для блоку першого кроку.
 const step1_startTest_btn = 'uc-start-read';	// Ім'я класу для блоку першого кроку.
+const classBlockSelectCategory = 'uc-select-category';	// Ім'я класу для блоку де обирають категорію тесту.
 const step2_BlockClassName = 'uc-blockStep-2';	// Ім'я класу для блоку другого кроку.
 const step2_BlockTextTitle = '[field="title"]';	// селектор для блоку з заголовком текстом.
 const step2_BlockTextValue = '[field="text"]';	// селектор для блоку з текстом тесту.
@@ -94,8 +95,10 @@ const getAllTest = () => {
 
 let currentTest;
 
-const blockStep1 = document.getElementsByClassName(step1_blockClassName)[0];
+const blockStep1 = document.getElementsByClassName(classStep1Block)[0];
 const blockCategoryList = document.getElementById(step1_categoryList);
+
+const blockSelectCategory = document.getElementsByClassName(classBlockSelectCategory)[0];
 
 const blockStep2 = document.getElementsByClassName(step2_BlockClassName)[0];
 
@@ -113,7 +116,8 @@ const stopWatchDisplay = stopWatch.querySelector('b');
 const clickHandler = (e) => {
 	e.preventDefault();
 	if (!stopwatchTest.isRunning) {
-		startRead();
+		// startRead();
+		progresSetState('selectCategory');
 	} else {
 		stopRead();
 		startTestButton.removeEventListener('click', clickHandler);
@@ -125,14 +129,22 @@ startTestButton.addEventListener('click', clickHandler);
 const progresSetState = (stepNumber) => {
 	switch (stepNumber) {
 		case 1:
+			blockCategoryList.style.display = 'none';
 			blockStep1.style.display = 'block';
-			blockCategoryList.style.display = 'flex';
 			blockStep2.style.display = 'none';
 			blockStep3.style.display = 'none';
 			blockStep4.style.display = 'none';
 			stopWatch.style.display = 'none';
 			startTestButton.textContent = buttonTextStep1;
 			break;
+			
+		// цей єтап має бути други, але був внесений на останніх єтапах. Щоб не порушувати нумерацію кроків йому дано назву//
+
+		case 'selectCategory':
+			blockStep1.style.display = 'none';
+			blockCategoryList.style.display = 'flex';
+			startTestButton.style.display = 'none';
+			break
 
 		case 2:
 			blockStep1.style.display = 'none';
@@ -141,6 +153,7 @@ const progresSetState = (stepNumber) => {
 			blockStep3.style.display = 'none';
 			blockStep4.style.display = 'none';
 			stopWatch.style.display = 'block';
+			startTestButton.style.display = 'table-cell';
 			startTestButton.textContent = buttonTextStep2;
 			break;
 
