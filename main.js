@@ -9,10 +9,14 @@
 
 const buttonTextStep1 = '	Почати тест	';  // Текст для кнонки початку тесту
 const buttonTextStep2 = '	Прочитав	';  // Текст для кнопки коли користувач завершив читання
-// const buttonTextStep3 = '	Хочеш покращити результат?	';  // Текст для кнопки коли користувач хоче повторити тест
 const buttonTextStep4 = '	Хочеш покращити результат?	';  // Текст для кнопки коли користувач хоче повторити тест
 const timeLimit = 300;   					// Максимальний час для проходження тесту(сек);
 const minLetterWord = 1;					// Мінімальна кількість літер у слові для підрахунку. 
+
+
+// ******************************************************
+//  Далі змінювати не можна
+// ******************************************************
 
 const step1_categoryList = 'categoryListContainer';	// Ім'я ідентифікатора для блоку з кнопками категоріями.
 const step1_blockClassName = 'uc-blockStep-1';	// Ім'я класу для блоку першого кроку.
@@ -23,15 +27,6 @@ const step2_BlockTextValue = '[field="text"]';	// селектор для бло
 const step3_BlockClassName = 'uc-blockStep-3';	// Ім'я класу для блоку третього кроку.
 const step4_BlockClassName = 'uc-blockStep-4';	// Ім'я класу для блоку четвертого кроку.
 
-
-// ******************************************************
-//  Далі змінювати не можна
-// ******************************************************
-
-
-// ******************************************************
-//  Добавить исключения на переменые, есть они или нет
-// ******************************************************
 
 class StopwatchTest {
 	constructor() {
@@ -97,7 +92,6 @@ const getAllTest = () => {
 	}
 }
 
-// document.addEventListener('DOMContentLoaded', () => {
 let currentTest;
 
 const blockStep1 = document.getElementsByClassName(step1_blockClassName)[0];
@@ -111,7 +105,7 @@ blockStep3Answers.innerHTML = '';
 
 const blockStep4 = document.getElementsByClassName(step4_BlockClassName)[0];
 const blockStep4ResultBlock = blockStep4.querySelector('.t-text');
-// [href="#start-read"]
+
 const startTestButton = document.getElementsByClassName(step1_startTest_btn)[0].querySelector('a');
 const stopWatch = document.getElementsByClassName('uc-stopwatch')[0];
 const stopWatchDisplay = stopWatch.querySelector('b');
@@ -131,7 +125,6 @@ startTestButton.addEventListener('click', clickHandler);
 const progresSetState = (stepNumber) => {
 	switch (stepNumber) {
 		case 1:
-			// console.log(startTestButton);
 			blockStep1.style.display = 'block';
 			blockCategoryList.style.display = 'flex';
 			blockStep2.style.display = 'none';
@@ -217,7 +210,6 @@ const showTestResult = () => {
 
 	const wordPS = Math.floor(statisticObj.wordCount * 60 / statisticObj.time);
 	const understainText = Math.floor(currentTest.correctAnswers * 100 / currentTest.questions.length);
-	// const understainTime = Math.floor(wordPS / 100 * understainText);
 
 	const strHTML = `
 		<p>Слів у тексті: <b style="font-size: 1.2em;">${statisticObj.wordCount}</b></p>
@@ -259,8 +251,6 @@ const printTextValue = () => {
 	const step2_BlockText = blockStep2.querySelector(step2_BlockTextValue);
 	step2_BlockText.textContent = currentTest.textValue;
 	step2_BlockText.style.fontSize = `${currentTest.textFontSize}px`;
-	// step2_BlockText.style.background = 'red';
-	console.log(`${currentTest.textFontSize}px`);
 }
 
 const printQuestion = (question) => {
@@ -301,7 +291,7 @@ const printQuestion = (question) => {
 	progresSetState(1);
 }());
 
-const validQuestion = (radio) => {
+validQuestion = (radio) => {
 	if (radio.value == radio.dataset.trueAnswer) {
 		currentTest.correctAnswers++;
 		radio.closest('.js-vote-item').style.background = '#E6F4E7';
@@ -324,5 +314,3 @@ const nextQuestion = () => {
 		showTestResult();
 	}
 }
-
-// });
