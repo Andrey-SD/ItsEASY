@@ -63,7 +63,7 @@ class CurrentTest {
 	constructor(obj) {
 
 		Object.assign(this, obj);
-		this.textValue = this.textValue.replace(/[\s]+/g, ' ').trim();
+		// this.textValue = this.textValue.replace(/[\s]+/g, ' ').trim();
 
 		this.numberQuestion = 0;
 		this.correctAnswers = 0;
@@ -260,9 +260,9 @@ const getRandomTest = (testArray, filter = '') => {
 }
 
 const printTextValue = () => {
-	blockStep2.querySelector(step2_BlockTextTitle).textContent = currentTest.textTitle;
+	blockStep2.querySelector(step2_BlockTextTitle).innerHTML = currentTest.textTitle;
 	const step2_BlockText = blockStep2.querySelector(step2_BlockTextValue);
-	step2_BlockText.textContent = currentTest.textValue;
+	step2_BlockText.innerHTML = `<pre>${currentTest.textValue}</pre>`;
 	step2_BlockText.style.fontSize = `${currentTest.textFontSize}px`;
 }
 
