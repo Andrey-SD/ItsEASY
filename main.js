@@ -285,7 +285,7 @@ const printQuestion = (question) => {
 			<div class="t-radio__wrapper">
 			<label style="display:flex; padding-left:10px;" class="t807__answer-text t-radio__control t-descr t-descr_sm t-text_weight_plus">
 			<div class="t807__input-wrapper">
-			<input type="radio" name="${index}" value="${index + 1}" data-true-answer="${question.trueAnswer}" class="t807__input t-radio js-vote-btn" onchange="validQuestion(this)">
+			<input type="radio" name="${index}" value="${index}" data-true-answer="${question.trueAnswer}" class="t807__input t-radio js-vote-btn" onchange="validQuestion(this)">
 			<div class="t807__answer-indicator t-radio__indicator"></div>
 			</div>
 			<span class="t807__answer-text_wrap">${answer}<br></span>
