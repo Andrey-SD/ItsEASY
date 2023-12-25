@@ -7,26 +7,27 @@
 // ******************************************************
 
 
-const buttonTextStep1 = '	Почати тест	';  // Текст для кнонки початку тесту
-const buttonTextStep2 = '	Прочитав	';  // Текст для кнопки коли користувач завершив читання
+const buttonTextStep1 = '	Почати тест	';  				// Текст для кнонки початку тесту
+const buttonTextStep2 = '	Прочитав	';  				// Текст для кнопки коли користувач завершив читання
 const buttonTextStep4 = '	Хочеш покращити результат?	';  // Текст для кнопки коли користувач хоче повторити тест
-const timeLimit = 300;   					// Максимальний час для проходження тесту(сек);
-const minLetterWord = 1;					// Мінімальна кількість літер у слові для підрахунку. 
+const timeLimit = 300;   									// Максимальний час для проходження тесту(сек);
+const minLetterWord = 1;									// Мінімальна кількість літер у слові для підрахунку. 
 
 
 // ******************************************************
 //  Далі змінювати не можна
 // ******************************************************
 
-const step1_categoryList = 'categoryListContainer';	// Ім'я ідентифікатора для блоку з кнопками категоріями.
-const classStep1Block = 'uc-blockStep-1';	// Ім'я класу для блоку першого кроку.
-const step1_startTest_btn = 'uc-start-read';	// Ім'я класу для блоку першого кроку.
+const headerTestClassName = 'uc-test-header'; 					// Ім'я ідентифікатора для блоку шапкою тесту
+const step1_categoryList = 'categoryListContainer';		// Ім'я ідентифікатора для блоку з кнопками категоріями.
+const classStep1Block = 'uc-blockStep-1';				// Ім'я класу для блоку першого кроку.
+const step1_startTest_btn = 'uc-start-read';			// Ім'я класу для блоку першого кроку.
 const classBlockSelectCategory = 'uc-select-category';	// Ім'я класу для блоку де обирають категорію тесту.
-const step2_BlockClassName = 'uc-blockStep-2';	// Ім'я класу для блоку другого кроку.
-const step2_BlockTextTitle = '[field="title"]';	// селектор для блоку з заголовком текстом.
-const step2_BlockTextValue = '[field="text"]';	// селектор для блоку з текстом тесту.
-const step3_BlockClassName = 'uc-blockStep-3';	// Ім'я класу для блоку третього кроку.
-const step4_BlockClassName = 'uc-blockStep-4';	// Ім'я класу для блоку четвертого кроку.
+const step2_BlockClassName = 'uc-blockStep-2';			// Ім'я класу для блоку другого кроку.
+const step2_BlockTextTitle = '[field="title"]';			// селектор для блоку з заголовком текстом.
+const step2_BlockTextValue = '[field="text"]';			// селектор для блоку з текстом тесту.
+const step3_BlockClassName = 'uc-blockStep-3';			// Ім'я класу для блоку третього кроку.
+const step4_BlockClassName = 'uc-blockStep-4';			// Ім'я класу для блоку четвертого кроку.
 
 
 class StopwatchTest {
@@ -63,7 +64,12 @@ class CurrentTest {
 	constructor(obj) {
 
 		Object.assign(this, obj);
+
+		//видаляємо усі подвійні (відступи, табуляції, перехід на нові рядки)
 		// this.textValue = this.textValue.replace(/[\s]+/g, ' ').trim();
+
+		//зберігаємо форматування(видаляємо табуляцію, залишаємо перехід на рядок)
+		this.textValue = this.textValue.replace(/\t/g, '').replace(/[ \t]+/g, ' ');
 
 		this.numberQuestion = 0;
 		this.correctAnswers = 0;
@@ -116,7 +122,6 @@ const stopWatchDisplay = stopWatch.querySelector('b');
 const clickHandler = (e) => {
 	e.preventDefault();
 	if (!stopwatchTest.isRunning) {
-		// startRead();
 		progresSetState('selectCategory');
 	} else {
 		stopRead();
@@ -127,6 +132,11 @@ const clickHandler = (e) => {
 startTestButton.addEventListener('click', clickHandler);
 
 const progresSetState = (stepNumber) => {
+	if (stepNumber != 1) {
+		const headerTest = document.querySelector(`.${headerTestClassName}`);
+		headerTest.scrollIntoView();
+	}
+
 	switch (stepNumber) {
 		case 1:
 			blockCategoryList.style.display = 'none';
@@ -137,7 +147,7 @@ const progresSetState = (stepNumber) => {
 			stopWatch.style.display = 'none';
 			startTestButton.textContent = buttonTextStep1;
 			break;
-			
+
 		// цей єтап має бути други, але був внесений на останніх єтапах. Щоб не порушувати нумерацію кроків йому дано назву//
 
 		case 'selectCategory':
@@ -262,7 +272,7 @@ const getRandomTest = (testArray, filter = '') => {
 const printTextValue = () => {
 	blockStep2.querySelector(step2_BlockTextTitle).innerHTML = currentTest.textTitle;
 	const step2_BlockText = blockStep2.querySelector(step2_BlockTextValue);
-	step2_BlockText.innerHTML = `<pre>${currentTest.textValue}</pre>`;
+	step2_BlockText.innerHTML = `<pre style="white-space:pre-wrap;font-family:inherit;text-align:left;">${currentTest.textValue}</pre>`;
 	step2_BlockText.style.fontSize = `${currentTest.textFontSize}px`;
 }
 
@@ -273,7 +283,7 @@ const printQuestion = (question) => {
 		const voitItemHTML = `
 			<div class="t807__answer js-vote-item" data-answer-id="${index}">
 			<div class="t-radio__wrapper">
-			<label class="t807__answer-text t-radio__control t-descr t-descr_sm t-text_weight_plus">
+			<label style="display:flex; padding-left:10px;" class="t807__answer-text t-radio__control t-descr t-descr_sm t-text_weight_plus">
 			<div class="t807__input-wrapper">
 			<input type="radio" name="${index}" value="${index + 1}" data-true-answer="${question.trueAnswer}" class="t807__input t-radio js-vote-btn" onchange="validQuestion(this)">
 			<div class="t807__answer-indicator t-radio__indicator"></div>
