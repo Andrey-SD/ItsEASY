@@ -262,7 +262,7 @@ const getRandomTest = (testArray, filter = '') => {
 const printTextValue = () => {
 	blockStep2.querySelector(step2_BlockTextTitle).innerHTML = currentTest.textTitle;
 	const step2_BlockText = blockStep2.querySelector(step2_BlockTextValue);
-	step2_BlockText.innerHTML = `<pre>${currentTest.textValue}</pre>`;
+	step2_BlockText.innerHTML = `<pre style="width:100%">${currentTest.textValue}</pre>`;
 	step2_BlockText.style.fontSize = `${currentTest.textFontSize}px`;
 }
 
