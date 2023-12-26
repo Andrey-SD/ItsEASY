@@ -132,7 +132,7 @@ const clickHandler = (e) => {
 startTestButton.addEventListener('click', clickHandler);
 
 const progresSetState = (stepNumber) => {
-	if (stepNumber != 1) {
+	if (stepNumber != 1 && stepNumber != 4) {
 		const headerTest = document.querySelector(`.${headerTestClassName}`);
 		headerTest.scrollIntoView();
 	}
@@ -314,7 +314,7 @@ const printQuestion = (question) => {
 	progresSetState(1);
 }());
 
-validQuestion = (radio) => {
+const validQuestion = (radio) => {
 	if (radio.value == radio.dataset.trueAnswer) {
 		currentTest.correctAnswers++;
 		radio.closest('.js-vote-item').style.background = '#E6F4E7';
@@ -334,6 +334,8 @@ const nextQuestion = () => {
 			printQuestion(currentTest.getCurrentQuestion());
 		}, 500);
 	} else {
-		showTestResult();
+		setTimeout(() => {
+			showTestResult();
+		}, 500);
 	}
 }
